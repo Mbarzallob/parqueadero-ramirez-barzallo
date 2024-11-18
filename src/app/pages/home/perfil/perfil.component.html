@@ -1,1 +1,76 @@
-<p>perfil works!</p>
+<div class="flex min-h-full flex-col justify-start px-6 py-12 lg:px-8">
+
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div class="space-y-3" [formGroup]="form">
+            <!-- <div>
+                <label for="email" class="block text-sm/6 font-medium text-gray-900">Correo electrónico</label>
+                <div class="mt-2">
+                    <input id="email" name="email" formControlName="email" type="email" autocomplete="email" required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div> -->
+
+            <!-- <div>
+                <div class="flex items-center justify-between">
+                    <label for="password" class="block text-sm/6 font-medium text-gray-900">Contraseña</label>
+                    <div class="text-sm">
+                        <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <input id="password" name="password" formControlName="password" type="password"
+                        autocomplete="current-password" required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div> -->
+            <div>
+                <label for="nombre" class="block text-sm/6 font-medium text-gray-900">Nombres</label>
+                <div class="mt-2">
+                    <input id="nombre" name="nombre" formControlName="nombre" type="text" autocomplete="nombre" required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div>
+            <div>
+                <label for="apellido" class="block text-sm/6 font-medium text-gray-900">Apellidos</label>
+                <div class="mt-2">
+                    <input id="apellido" name="apellido" formControlName="apellido" type="text" autocomplete="apellido"
+                        required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div>
+            <div>
+                <label for="telefono" class="block text-sm/6 font-medium text-gray-900">Telefono</label>
+                <div class="mt-2">
+                    <input id="telefono" name="telefono" formControlName="telefono" type="text" autocomplete="telefono"
+                        required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div>
+            <div>
+                <label for="genero" class="block text-sm/6 font-medium text-gray-900">Genero</label>
+                <div class="mt-2">
+                    <input id="genero" name="genero" formControlName="genero" type="text" autocomplete="genero" required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div>
+            <div>
+                <label for="fechaNacimiento" class="block text-sm/6 font-medium text-gray-900">Fecha de
+                    nacimiento</label>
+                <div class="mt-2">
+                    <input id="fechaNacimiento" name="fechaNacimiento" formControlName="fechaNacimiento" type="date"
+                        autocomplete="fechaNacimiento" required
+                        class="pl-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                </div>
+            </div>
+            <div>
+                <button (click)="actualizarInfo()"
+                    class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Actualizar
+                    información</button>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

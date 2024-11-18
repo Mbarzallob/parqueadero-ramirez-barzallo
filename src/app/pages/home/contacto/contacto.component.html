@@ -1,1 +1,64 @@
-<p>contacto works!</p>
+<div class="bg-gray-100 py-12">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-4xl font-bold text-blue-600 text-center mb-6">Contáctenos</h2>
+        <p class="text-center text-gray-600 mb-12">
+            ¿Tienes alguna pregunta o comentario? ¡Nos encantaría saber de ti!
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Contact Information -->
+            <div class="bg-white shadow-lg rounded-lg p-8">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Información de contacto</h3>
+                <p class="text-gray-600 mb-4">
+                    Comunícate con nosotros utilizando los siguientes medios:
+                </p>
+                <ul class="text-gray-700 space-y-2">
+                    <li>
+                        <span class="font-medium">Teléfono:</span> +593 987-654-321
+                    </li>
+                    <li>
+                        <span class="font-medium">Correo electrónico:</span>
+                        <a href="mailto:soporte@parqueadero.com" class="text-blue-500 hover:underline">
+                            soporte&#64;parqueadero.com
+                        </a>
+                    </li>
+                    <li>
+                        <span class="font-medium">Dirección:</span> Av. Central 123, Quito, Ecuador
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="bg-white shadow-lg rounded-lg p-8">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Envíanos un mensaje</h3>
+                <form action="#" method="POST" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-gray-700 font-medium">Nombre</label>
+                        <input type="text" id="name" name="name"
+                            class="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            placeholder="Ingresa tu nombre" required />
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-gray-700 font-medium">Correo Electrónico</label>
+                        <input type="email" id="email" name="email"
+                            class="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            placeholder="Ingresa tu correo electrónico" required />
+                    </div>
+
+                    <div>
+                        <label for="message" class="block text-gray-700 font-medium">Mensaje</label>
+                        <textarea id="message" name="message" rows="5"
+                            class="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            placeholder="Escribe tu mensaje" required></textarea>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
+                        Enviar mensaje
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,9 +11,19 @@ import { CommonModule } from '@angular/common';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private router: Router
+  ) {}
   isLogged$ = this.authService.isLogged();
   logout() {
     this.authService.logout();
+    this.router.navigate(['/']);
+  }
+  esAdmin() {
+    if (!this.isLogged$) {
+      return false;
+    }
+    return this.authService.obtenerRol() == 'admin';
   }
 }

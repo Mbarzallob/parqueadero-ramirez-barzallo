@@ -4,6 +4,7 @@ import { RegisterComponent } from './pages/autentication/register/register.compo
 import { AuthLayoutComponent } from './layots/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layots/main-layout/main-layout.component';
 import { authGuard } from './guard/auth/auth.guard';
+import { loginGuard } from './guard/login/login.guard';
 
 export const routes: Routes = [
   {
@@ -44,6 +45,7 @@ export const routes: Routes = [
           import('./pages/autentication/login/login.component').then(
             (m) => m.LoginComponent
           ),
+        //canActivate: [loginGuard],
       },
       {
         path: 'register',
@@ -51,6 +53,7 @@ export const routes: Routes = [
           import('./pages/autentication/register/register.component').then(
             (m) => m.RegisterComponent
           ),
+        //canActivate: [loginGuard],
       },
     ],
   },

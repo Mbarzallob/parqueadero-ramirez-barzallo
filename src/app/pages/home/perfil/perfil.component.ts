@@ -1,12 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './perfil.component.html',
-  styleUrl: './perfil.component.scss'
+  styleUrl: './perfil.component.scss',
 })
-export class PerfilComponent {
-
+export class PerfilComponent implements OnInit {
+  form = new FormGroup({
+    nombre: new FormControl(''),
+    apellido: new FormControl(''),
+    telefono: new FormControl(''),
+    genero: new FormControl(''),
+    fechaNacimiento: new FormControl(''),
+  });
+  constructor(private authService: AuthenticationService) {}
+  ngOnInit(): void {
+    this.authService.getInformationUser().subscribe((user) => {
+      // const fechaNacimiento = user.fechaNacimiento?.toDate
+      //   ? user.fechaNacimiento.toDate().toISOString().split('T')[0]
+      //   : '';
+      this.form.setValue({
+        nombre: user.nombre,
+        apellido: user.apellido,
+        telefono: user.telefono,
+        genero: user.genero,
+        fechaNacimiento: user.fechaNacimiento,
+      });
+    });
+  }
+  actualizarInfo() {
+    const formValue = this.form.getRawValue();
+    const user = {
+      ...formValue,
+      fechaNacimiento: formValue.fechaNacimiento
+        ? new Date(formValue.fechaNacimiento)
+        : null,
+    };
+    this.authService.updateUserInfo(user);
+  }
 }

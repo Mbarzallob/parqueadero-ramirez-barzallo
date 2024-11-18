@@ -8,8 +8,7 @@ import {
 } from '@angular/forms';
 import { signOut } from '@firebase/auth';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { User } from '../../../models/user';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -20,20 +19,7 @@ import { User } from '../../../models/user';
 })
 export class RegisterComponent {
   error: string = '';
-  user: User = {
-    email: '',
-    password: '',
-    nombre: '',
-    apellido: '',
-    telefono: '',
-    genero: '',
-    fechaNacimiento: undefined,
-    fechaRegistro: undefined,
-    activo: false,
-    rol: '',
-    id: null,
-    actualizarPerfil: null,
-  };
+  user: any;
   formRegister: FormGroup = new FormGroup({
     email: new FormControl(''),
     password: new FormControl(''),
@@ -44,7 +30,10 @@ export class RegisterComponent {
     fechaNacimiento: new FormControl(''),
   });
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private router: Router
+  ) {}
 
   getErrorMessage(errorCode: string): string {
     const errorMessages: { [key: string]: string } = {
@@ -57,15 +46,11 @@ export class RegisterComponent {
 
   registrarse() {
     const data = this.formRegister.getRawValue();
-    this.user.email = data.email;
-    this.user.password = data.password;
-    this.user.nombre = data.nombre;
-    this.user.apellido = data.apellido;
-    this.user.telefono = data.telefono;
-    this.user.genero = data.genero;
-    this.user.fechaNacimiento = data.fechaNacimiento;
-    this.authService.registerWithUserAndPass(this.user).subscribe(
-      (resp) => {},
+
+    this.authService.registerWithUserAndPass(data).subscribe(
+      (resp) => {
+        this.router.navigate(['/']);
+      },
       (error) => {
         this.error = this.getErrorMessage(error.code);
       }
@@ -73,7 +58,9 @@ export class RegisterComponent {
   }
   registrarseConGoogle() {
     this.authService.registerWithGoogle().subscribe(
-      (resp) => {},
+      (resp) => {
+        this.router.navigate(['/']);
+      },
       (error) => {
         console.log(error);
         this.error = this.getErrorMessage(error.code);
