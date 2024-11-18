@@ -102,6 +102,7 @@ export class AuthenticationService {
       ).then((resp) => {
         user.id = resp.user?.uid;
         user.actualizarPerfil = false;
+        user.email = resp.user?.email;
         this.saveUserInfo(user);
       })
     );
@@ -119,6 +120,7 @@ export class AuthenticationService {
           if (querySnapshot.empty) {
             this.saveUserInfo({
               id: resp.user?.uid,
+              email: resp.user?.email,
               nombre: null,
               apellido: null,
               telefono: null,
@@ -136,6 +138,7 @@ export class AuthenticationService {
   saveUserInfo(user: any) {
     const userInfo = {
       nombre: user.nombre,
+      email: user.email,
       apellido: user.apellido,
       telefono: user.telefono,
       genero: user.genero,

@@ -39,6 +39,7 @@ export const routes: Routes = [
           import('./pages/home/perfil/perfil.component').then(
             (m) => m.PerfilComponent
           ),
+        canActivate: [authGuard],
       },
       {
         path: 'admin/parking-lots',
@@ -46,6 +47,15 @@ export const routes: Routes = [
           import('./pages/admin/parking-lots/parking-lots.component').then(
             (m) => m.ParkingLotsComponent
           ),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'admin/users',
+        loadComponent: () =>
+          import('./pages/admin/users/users.component').then(
+            (m) => m.UsersComponent
+          ),
+        canActivate: [authGuard],
       },
     ],
   },
