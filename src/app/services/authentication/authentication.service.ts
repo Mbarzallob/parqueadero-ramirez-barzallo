@@ -24,6 +24,7 @@ import {
   query,
   updateDoc,
   where,
+  writeBatch,
 } from '@firebase/firestore';
 
 @Injectable({
@@ -205,5 +206,136 @@ export class AuthenticationService {
   logout(): Promise<void> {
     localStorage.removeItem('rol');
     return this.firebaseAuth.signOut();
+  }
+
+  async loadSampleData() {
+    const now = new Date();
+    const oneMonthLater = new Date();
+    oneMonthLater.setMonth(now.getMonth() + 1);
+
+    const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+    // Datos de ejemplo para parkingSpaces
+    const parkingSpaces = [
+      {
+        id: 'A1',
+        block: 'A',
+        type: 'small',
+        pricePerHour: 2.0,
+        pricePerMonth: 50.0,
+      },
+      {
+        id: 'A2',
+        block: 'A',
+        type: 'medium',
+        pricePerHour: 3.0,
+        pricePerMonth: 60.0,
+      },
+      {
+        id: 'A3',
+        block: 'A',
+        type: 'large',
+        pricePerHour: 4.0,
+        pricePerMonth: 80.0,
+      },
+      {
+        id: 'B1',
+        block: 'B',
+        type: 'small',
+        pricePerHour: 2.5,
+        pricePerMonth: 55.0,
+      },
+      {
+        id: 'B2',
+        block: 'B',
+        type: 'medium',
+        pricePerHour: 3.5,
+        pricePerMonth: 65.0,
+      },
+      {
+        id: 'B3',
+        block: 'B',
+        type: 'large',
+        pricePerHour: 4.5,
+        pricePerMonth: 85.0,
+      },
+      {
+        id: 'C1',
+        block: 'C',
+        type: 'small',
+        pricePerHour: 2.2,
+        pricePerMonth: 52.0,
+      },
+      {
+        id: 'C2',
+        block: 'C',
+        type: 'medium',
+        pricePerHour: 3.2,
+        pricePerMonth: 62.0,
+      },
+      {
+        id: 'C3',
+        block: 'C',
+        type: 'large',
+        pricePerHour: 4.2,
+        pricePerMonth: 82.0,
+      },
+      {
+        id: 'D1',
+        block: 'D',
+        type: 'moto',
+        pricePerHour: 1.0,
+        pricePerMonth: 20.0,
+      },
+    ];
+
+    // Datos de ejemplo para contracts
+    const contracts = [
+      {
+        id: 'contract1',
+        userId: '137WDjd6y2U50Fr7y5qdZgqBjmL2',
+        parkingSpaceId: 'A1',
+        startDate: now.toISOString(),
+        endDate: oneMonthLater.toISOString(),
+        monthlyRate: 50.0,
+      },
+    ];
+
+    // Datos de ejemplo para occupations
+    const occupations = [
+      {
+        id: 'occupation1',
+        parkingSpaceId: 'A2',
+        userId: 'XjJItbAI2ZbAJfeR0xom0HWhAkz2',
+        startTime: now.toISOString(),
+        endTime: twoHoursLater.toISOString(),
+        rate: 6.0,
+      },
+    ];
+
+    // Usamos batch para escribir en Firestore
+    const batch = writeBatch(this.firestore);
+
+    // Agregar datos a parkingSpaces
+    parkingSpaces.forEach((space) => {
+      const docRef = doc(this.firestore, `parkingSpaces/${space.id}`);
+      batch.set(docRef, space);
+    });
+
+    // Agregar datos a contracts
+    contracts.forEach((contract) => {
+      const docRef = doc(this.firestore, `contracts/${contract.id}`);
+      batch.set(docRef, contract);
+    });
+
+    // Agregar datos a occupations
+    occupations.forEach((occupation) => {
+      const docRef = doc(this.firestore, `occupations/${occupation.id}`);
+      batch.set(docRef, occupation);
+    });
+
+    // Ejecutar batch
+    await batch.commit();
+    console.log('Datos cargados exitosamente.');
   }
 }

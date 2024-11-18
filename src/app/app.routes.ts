@@ -33,8 +33,23 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+      {
+        path: 'admin/usuarios',
+        loadComponent: () =>
+          import('./pages/home/perfil/perfil.component').then(
+            (m) => m.PerfilComponent
+          ),
+      },
+      {
+        path: 'admin/parking-lots',
+        loadComponent: () =>
+          import('./pages/admin/parking-lots/parking-lots.component').then(
+            (m) => m.ParkingLotsComponent
+          ),
+      },
     ],
   },
+
   {
     path: 'auth',
     component: AuthLayoutComponent,

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ParkingService } from '../../../services/parking/parking.service';
 
 @Component({
   selector: 'app-perfil',
@@ -17,7 +18,10 @@ export class PerfilComponent implements OnInit {
     genero: new FormControl(''),
     fechaNacimiento: new FormControl(''),
   });
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private p: ParkingService
+  ) {}
   ngOnInit(): void {
     this.authService.getInformationUser().subscribe((user) => {
       // const fechaNacimiento = user.fechaNacimiento?.toDate
