@@ -6,6 +6,8 @@ import {
   getDocs,
   where,
   query,
+  updateDoc,
+  doc,
 } from '@angular/fire/firestore';
 
 @Injectable({
@@ -23,5 +25,23 @@ export class UsersService {
     }));
 
     return activeusers;
+  }
+  async updateUser(user: any) {
+    console.log(user);
+    const userCollectionRef = collection(this.firestore, 'users');
+    const userQuery = query(userCollectionRef, where('id', '==', user.id));
+
+    return getDocs(userQuery).then((querySnapshot) => {
+      if (querySnapshot.empty) {
+        throw new Error(
+          'No se encontró ningún documento con el ID proporcionado.'
+        );
+      }
+
+      const docId = querySnapshot.docs[0].id;
+      const userDocRef = doc(this.firestore, `users/${docId}`);
+
+      return updateDoc(userDocRef, user);
+    });
   }
 }

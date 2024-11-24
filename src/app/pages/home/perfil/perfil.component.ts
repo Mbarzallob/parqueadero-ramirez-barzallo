@@ -24,9 +24,6 @@ export class PerfilComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.authService.getInformationUser().subscribe((user) => {
-      // const fechaNacimiento = user.fechaNacimiento?.toDate
-      //   ? user.fechaNacimiento.toDate().toISOString().split('T')[0]
-      //   : '';
       this.form.setValue({
         nombre: user.nombre,
         apellido: user.apellido,

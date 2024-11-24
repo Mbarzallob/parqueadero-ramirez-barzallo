@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
+  doc,
+  getDoc,
   getDocs,
   query,
   where,
@@ -13,63 +15,31 @@ import {
 export class ParkingService {
   constructor(private firestore: Firestore) {}
 
-  async getAllParkingData() {
-    const now = new Date();
-
-    const spacesRef = collection(this.firestore, 'parkingSpaces');
-    const spacesSnapshot = await getDocs(spacesRef);
-    const spaces = spacesSnapshot.docs.map((doc) => ({
+  async getAllBlocks() {
+    const blocksRef = collection(this.firestore, 'blocks');
+    const blocksSnapshot = await getDocs(blocksRef);
+    const blocks = blocksSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    const contractsRef = collection(this.firestore, 'contracts');
-    const contractsQuery = query(
-      contractsRef,
-      where('startDate', '<=', now.toISOString()),
-      where('endDate', '>=', now.toISOString())
-    );
-    const contractsSnapshot = await getDocs(contractsQuery);
-    const activeContracts = contractsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log(activeContracts);
+    return blocks;
+  }
+  async getParkingLot(blockId: string, parkingLotId: string) {
+    const blockRef = doc(this.firestore, `blocks/${blockId}`);
+    const blockSnapshot = await getDoc(blockRef);
 
-    const occupationsRef = collection(this.firestore, 'occupations');
-    const occupationsQuery = query(
-      occupationsRef,
-      where('startTime', '<=', now.toISOString()),
-      where('endTime', '>=', now.toISOString())
-    );
-    const occupationsSnapshot = await getDocs(occupationsQuery);
-    const activeOccupations = occupationsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log(activeOccupations);
+    if (blockSnapshot.exists()) {
+      const blockData = blockSnapshot.data();
+      const parkingSpaces = blockData?.['parkingSpaces'] || [];
 
-    // Combinar la información
-    const combinedData = spaces.map((space) => {
-      const occupiedByContract = activeContracts.find(
-        (contract: any) => contract.parkingSpaceId === space.id
-      );
-      const occupiedByOccupation = activeOccupations.find(
-        (occupation: any) => occupation.parkingSpaceId === space.id
+      const parkingLot = parkingSpaces.find(
+        (lot: any) => lot.id === parkingLotId
       );
 
-      return {
-        ...space,
-        status: occupiedByContract
-          ? 'monthlyContract'
-          : occupiedByOccupation
-          ? 'occupied'
-          : 'available',
-        contract: occupiedByContract || null,
-        occupation: occupiedByOccupation || null,
-      };
-    });
-
-    return combinedData;
+      return parkingLot || null;
+    } else {
+      throw new Error(`Block with id ${blockId} does not exist.`);
+    }
   }
 }

@@ -6,22 +6,27 @@
     </div>
     <div *ngIf="!isLoading">
 
-        <select [(ngModel)]="selectedCategory"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-6 ">
-            <option *ngFor="let cat of categorias">{{cat}}</option>
-
+        <select
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-6"
+            (change)="onBlockChange($event)">
+            <option *ngFor="let cat of blocksOriginal" [ngValue]="cat">{{ cat.nombre }}</option>
         </select>
+
+
+
 
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
-            <div *ngFor="let space of parkingSpacesFiltered" [class.bg-green-500]="space.status === 'available'"
-                [class.bg-red-500]="space.status === 'occupied'"
-                [class.bg-blue-500]="space.status === 'monthlyContract'"
-                class="p-4 rounded shadow text-white flex flex-col justify-between">
-                <h2 class="text-lg font-bold">Espacio {{ space.id }}</h2>
-                <p><strong>Tipo:</strong> {{ space.type }}</p>
-                <p><strong>Estado:</strong> {{ space.status | titlecase }}</p>
-
+            <div *ngFor="let space of parkingSpaces" routerLink="/admin/parking-lot"
+                [queryParams]="{parkingId:space.id, blockId:selectedBlock.id}"
+                class="p-4 rounded shadow text-white flex flex-col justify-between "
+                [ngClass]="getTypeOfParking(space) ">
+                <h2 class="text-lg font-bold ">Espacio {{selectedBlock.nombre}}{{ space.id }}</h2>
+                <p>Precio por hora: {{space.precioPorHora}}</p>
+                <p>Precio por mes: {{space.precioPorMes}}</p>
+                <p>Precio por semana: {{space.precioPorSemana}}</p>
+                <p>Precio por dia: {{space.precioPorDia}}</p>
+                <p>Tamaño: {{space.tamano |titlecase}}</p>
 
             </div>
         </div>
