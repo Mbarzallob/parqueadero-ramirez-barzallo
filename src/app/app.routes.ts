@@ -50,6 +50,13 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'admin/block-management',
+        loadComponent: () =>
+          import(
+            './pages/admin/block-management/block-management.component'
+          ).then((m) => m.BlockManagementComponent),
+      },
+      {
         path: 'admin/parking-lot',
         loadComponent: () =>
           import('./pages/admin/parking-lot/parking-lot.component').then(

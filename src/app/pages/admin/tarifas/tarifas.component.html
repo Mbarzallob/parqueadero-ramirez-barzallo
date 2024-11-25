@@ -11,32 +11,32 @@
                         Hora</label>
                     <input id="precioPorHora-{{ i }}" [(ngModel)]="rate.precioPorHora" name="precioPorHora-{{ i }}"
                         type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        (input)="checkChanges()" />
+                        (input)="checkChanges(i)" />
                 </div>
                 <div>
                     <label for="precioPorDia-{{ i }}" class="block text-sm font-medium text-gray-700">Precio por
                         Día</label>
                     <input id="precioPorDia-{{ i }}" [(ngModel)]="rate.precioPorDia" name="precioPorDia-{{ i }}"
                         type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        (input)="checkChanges()" />
+                        (input)="checkChanges(i)" />
                 </div>
                 <div>
                     <label for="precioPorSemana-{{ i }}" class="block text-sm font-medium text-gray-700">Precio por
                         Semana</label>
                     <input id="precioPorSemana-{{ i }}" [(ngModel)]="rate.precioPorSemana"
                         name="precioPorSemana-{{ i }}" type="number"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md" (input)="checkChanges()" />
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" (input)="checkChanges(i)" />
                 </div>
                 <div>
                     <label for="precioPorMes-{{ i }}" class="block text-sm font-medium text-gray-700">Precio por
                         Mes</label>
                     <input id="precioPorMes-{{ i }}" [(ngModel)]="rate.precioPorMes" name="precioPorMes-{{ i }}"
                         type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        (input)="checkChanges()" />
+                        (input)="checkChanges(i)" />
                 </div>
             </div>
 
-            <button *ngIf="showSaveButton" type="button" (click)="updateRate(i)"
+            <button *ngIf="showSaveButtons[i]" type="button" (click)="updateRate(i)"
                 class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                 Guardar Cambios
             </button>

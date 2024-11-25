@@ -31,6 +31,7 @@ export class ContractModalComponent implements OnInit {
   filteredUsers: any[] = [];
   selectedUser: any = null;
   users: any[] = [];
+  price: number = 0;
   constructor(
     public dialogRef: MatDialogRef<ContractModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -319,6 +320,41 @@ export class ContractModalComponent implements OnInit {
 
     this.step = 1;
 
+    // Calcular el precio según la opción seleccionada y las tarifas proporcionadas
+    console.log(this.data.rates);
+    switch (this.selectedOption) {
+      case 'hora':
+        const startHour = new Date(contractData.fechaInicio).getHours();
+        const endHour = new Date(contractData.fechaFin).getHours();
+        const hours = endHour - startHour;
+        this.price = hours * this.data.rates.hora;
+        break;
+      case 'dia':
+        const startDay = new Date(contractData.fechaInicio);
+        const endDay = new Date(contractData.fechaFin);
+        const days = Math.ceil(
+          (endDay.getTime() - startDay.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        this.price = days * this.data.rates.diario;
+        break;
+      case 'semana':
+        const startWeek = new Date(contractData.fechaInicio);
+        const endWeek = new Date(contractData.fechaFin);
+        const weeks = Math.ceil(
+          (endWeek.getTime() - startWeek.getTime()) / (1000 * 60 * 60 * 24 * 7)
+        );
+        this.price = weeks * this.data.rates.semanal;
+        break;
+      case 'mes':
+        const startMonth = new Date(contractData.fechaInicio);
+        const endMonth = new Date(contractData.fechaFin);
+        const months =
+          (endMonth.getFullYear() - startMonth.getFullYear()) * 12 +
+          (endMonth.getMonth() - startMonth.getMonth());
+        this.price = months * this.data.rates.mensual;
+        break;
+    }
+
     this.finalData = {
       blockId: this.blockId,
       parkingSpaceId: this.parkingSpaceId,
@@ -335,6 +371,7 @@ export class ContractModalComponent implements OnInit {
   }
   guardar() {
     this.finalData.contractData.idUser = this.selectedUser.id;
+    this.finalData.contractData.precio = this.price;
     console.log(this.finalData);
     this.parkingService
       .addContractToParkingLot(

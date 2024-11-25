@@ -167,6 +167,12 @@ export class ParkingLotComponent {
       data: {
         date: data.date,
         ocupiedDates: this.ocupiedDates,
+        rates: {
+          diario: this.parkingLot.precioPorDia,
+          mensual: this.parkingLot.precioPorMes,
+          hora: this.parkingLot.precioPorHora,
+          semanal: this.parkingLot.precioPorSemana,
+        },
       },
     });
     dialog.afterClosed().subscribe(() => {

@@ -1,0 +1,55 @@
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">Gestión de Bloques y Parking Spaces</h1>
+
+    <!-- Formulario de Bloques -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Añadir Bloque</h2>
+        <form [formGroup]="blockForm" (ngSubmit)="addBlock()">
+            <div class="mb-4">
+                <label for="block-name" class="block text-sm font-medium">Nombre del Bloque:</label>
+                <input id="block-name" formControlName="name" type="text" placeholder="Ejemplo: Bloque A"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+            </div>
+            <button type="submit" [disabled]="blockForm.invalid"
+                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                Añadir Bloque
+            </button>
+        </form>
+    </div>
+
+    <!-- Lista de Bloques -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Bloques Existentes</h2>
+        <div *ngIf="blocks.length > 0; else noBlocks">
+            <div *ngFor="let block of blocks"
+                class="p-4 mb-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-100"
+                (click)="selectBlock(block.id)" [class.bg-blue-100]="selectedBlockId === block.id">
+                <p class="font-bold text-gray-800">Nombre: {{ block.nombre }}</p>
+                <p class="text-sm text-gray-600">ID: {{ block.id }}</p>
+            </div>
+        </div>
+        <ng-template #noBlocks>
+            <p class="text-gray-500">No hay bloques registrados.</p>
+        </ng-template>
+    </div>
+
+    <!-- Formulario de Parking Spaces -->
+    <div *ngIf="selectedBlockId" class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Añadir Parking Space al Bloque Seleccionado</h2>
+        <form [formGroup]="parkingSpaceForm" (ngSubmit)="addParkingSpace()">
+            <div class="mb-4">
+                <label for="rate" class="block text-sm font-medium">Tarifa:</label>
+                <select id="rate" formControlName="rateId" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option *ngFor="let rate of rates" [value]="rate.id">
+                        {{ rate.type }} - Por Hora: {{ rate.precioPorHora }} | Por Día: {{ rate.precioPorDia }}
+                    </option>
+                </select>
+            </div>
+
+            <button type="submit" [disabled]="parkingSpaceForm.invalid"
+                class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                Añadir Parking Space
+            </button>
+        </form>
+    </div>
+</div>
