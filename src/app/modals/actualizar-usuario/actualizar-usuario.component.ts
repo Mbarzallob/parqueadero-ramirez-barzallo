@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { UsersService } from '../../services/users/users.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-actualizar-usuario',
   standalone: true,
@@ -26,20 +26,23 @@ export class ActualizarUsuarioComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UsersService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<ActualizarUsuarioComponent>
   ) {}
 
   ngOnInit(): void {
-    console.log(this.data);
-    console.log('---------------------------');
     this.userForm.patchValue(this.data);
   }
-  actualizar() {
+  async actualizar() {
     const user = {
       ...this.userForm.getRawValue(),
       id: this.data.id,
       actualizarPerfil: false,
     };
-    this.userService.updateUser(user);
+
+    await this.userService.updateUser(user);
+    alert('Usuario actualizado correctamente');
+
+    this.dialogRef.close();
   }
 }

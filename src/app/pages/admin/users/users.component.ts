@@ -22,11 +22,13 @@ export class UsersComponent implements OnInit {
     console.log(this.users);
   }
   openDialog(user: any) {
-    console.log(user);
-    this.dialog.open(ActualizarUsuarioComponent, {
+    const dialog = this.dialog.open(ActualizarUsuarioComponent, {
       data: user,
       height: '400px',
       width: '600px',
+    });
+    dialog.afterClosed().subscribe((result) => {
+      this.getUsers();
     });
   }
 }

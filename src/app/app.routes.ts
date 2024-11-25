@@ -55,6 +55,7 @@ export const routes: Routes = [
           import(
             './pages/admin/block-management/block-management.component'
           ).then((m) => m.BlockManagementComponent),
+        canActivate: [authGuard],
       },
       {
         path: 'admin/horario-management',
@@ -62,6 +63,7 @@ export const routes: Routes = [
           import(
             './pages/admin/horario-management/horario-management.component'
           ).then((m) => m.HorarioManagementComponent),
+        canActivate: [authGuard],
       },
       {
         path: 'admin/parking-lot',
@@ -69,6 +71,7 @@ export const routes: Routes = [
           import('./pages/admin/parking-lot/parking-lot.component').then(
             (m) => m.ParkingLotComponent
           ),
+        canActivate: [authGuard],
       },
       {
         path: 'admin/tarifas',
@@ -76,6 +79,7 @@ export const routes: Routes = [
           import('./pages/admin/tarifas/tarifas.component').then(
             (m) => m.TarifasComponent
           ),
+        canActivate: [authGuard],
       },
       {
         path: 'admin/users',
