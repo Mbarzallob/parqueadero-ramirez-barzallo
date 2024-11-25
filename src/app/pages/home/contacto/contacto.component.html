@@ -14,16 +14,16 @@
                 </p>
                 <ul class="text-gray-700 space-y-2">
                     <li>
-                        <span class="font-medium">Teléfono:</span> +593 987-654-321
+                        <span class="font-medium">Teléfono:</span> +593 98 393 5886
                     </li>
                     <li>
                         <span class="font-medium">Correo electrónico:</span>
-                        <a href="mailto:soporte@parqueadero.com" class="text-blue-500 hover:underline">
-                            soporte&#64;parqueadero.com
+                        <a href="mailto:jramirezs11@est.ups.edu.ec" class="text-blue-500 hover:underline">
+                            jramirezs11&#64;est.ups.edu.ec
                         </a>
                     </li>
                     <li>
-                        <span class="font-medium">Dirección:</span> Av. Central 123, Quito, Ecuador
+                        <span class="font-medium">Dirección:</span> Universidad Politecnica Salesiana, Cuenca, Ecuador
                     </li>
                 </ul>
             </div>
@@ -31,33 +31,47 @@
             <!-- Contact Form -->
             <div class="bg-white shadow-lg rounded-lg p-8">
                 <h3 class="text-2xl font-semibold text-gray-800 mb-4">Envíanos un mensaje</h3>
-                <form action="#" method="POST" class="space-y-4">
+                <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-4">
                     <div>
-                        <label for="name" class="block text-gray-700 font-medium">Nombre</label>
-                        <input type="text" id="name" name="name"
+                        <label for="nombre" class="block text-gray-700 font-medium">Nombre</label>
+                        <input type="text" id="nombre" formControlName="nombre"
                             class="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Ingresa tu nombre" required />
+                            placeholder="Ingresa tu nombre" />
+                        <div *ngIf="contactForm.get('nombre')?.invalid && contactForm.get('nombre')?.touched"
+                            class="text-red-500 text-sm">
+                            El nombre es requerido.
+                        </div>
                     </div>
 
                     <div>
-                        <label for="email" class="block text-gray-700 font-medium">Correo Electrónico</label>
-                        <input type="email" id="email" name="email"
+                        <label for="correo" class="block text-gray-700 font-medium">Correo Electrónico</label>
+                        <input type="email" id="correo" formControlName="correo"
                             class="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Ingresa tu correo electrónico" required />
+                            placeholder="Ingresa tu correo electrónico" />
+                        <div *ngIf="contactForm.get('correo')?.invalid && contactForm.get('correo')?.touched"
+                            class="text-red-500 text-sm">
+                            <span *ngIf="contactForm.get('correo')?.errors?.['required']">El correo es requerido.</span>
+                            <span *ngIf="contactForm.get('correo')?.errors?.['email']">Ingresa un correo válido.</span>
+                        </div>
                     </div>
 
                     <div>
-                        <label for="message" class="block text-gray-700 font-medium">Mensaje</label>
-                        <textarea id="message" name="message" rows="5"
+                        <label for="mensaje" class="block text-gray-700 font-medium">Mensaje</label>
+                        <textarea id="mensaje" formControlName="mensaje" rows="5"
                             class="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Escribe tu mensaje" required></textarea>
+                            placeholder="Escribe tu mensaje"></textarea>
+                        <div *ngIf="contactForm.get('mensaje')?.invalid && contactForm.get('mensaje')?.touched"
+                            class="text-red-500 text-sm">
+                            El mensaje es requerido.
+                        </div>
                     </div>
 
-                    <button type="submit"
+                    <button type="submit" [disabled]="contactForm.invalid"
                         class="w-full bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
                         Enviar mensaje
                     </button>
                 </form>
+
             </div>
         </div>
     </div>
