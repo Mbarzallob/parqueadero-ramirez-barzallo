@@ -53,6 +53,7 @@ export class ParkingService {
       | 'ContratosMensuales',
     contractData: any
   ) {
+    contractData.status = 'active'; // Agregar el estado del contrato
     const blockRef = doc(this.firestore, `blocks/${blockId}`);
     const blockSnapshot = await getDoc(blockRef);
 
@@ -83,6 +84,60 @@ export class ParkingService {
     updatedParkingSpaces[parkingLotIndex] = targetParkingLot;
 
     // Actualizar el documento en Firestore
+    await updateDoc(blockRef, { parkingSpaces: updatedParkingSpaces });
+
+    return true;
+  }
+  async updateContractStatus(
+    blockId: string,
+    parkingLotId: string,
+    contractType:
+      | 'ContratosPorHora'
+      | 'ContratosDiarios'
+      | 'ContratosSemanales'
+      | 'ContratosMensuales',
+    contractIndex: number,
+    newStatus: 'active' | 'inactive'
+  ) {
+    // Obtener referencia del bloque
+    const blockRef = doc(this.firestore, `blocks/${blockId}`);
+    const blockSnapshot = await getDoc(blockRef);
+
+    if (!blockSnapshot.exists()) {
+      throw new Error(`Block with id ${blockId} does not exist.`);
+    }
+
+    const blockData = blockSnapshot.data();
+    const parkingSpaces = blockData?.['parkingSpaces'] || [];
+
+    // Buscar el índice del espacio de estacionamiento
+    const parkingLotIndex = parkingSpaces.findIndex(
+      (lot: any) => lot.id === parkingLotId
+    );
+
+    if (parkingLotIndex === -1) {
+      throw new Error(`Parking lot with id ${parkingLotId} does not exist.`);
+    }
+
+    // Crear una copia actualizable de los espacios de estacionamiento
+    const updatedParkingSpaces = [...parkingSpaces];
+    const targetParkingLot = { ...updatedParkingSpaces[parkingLotIndex] };
+
+    // Validar que el contrato exista dentro del tipo correspondiente
+    const contracts = targetParkingLot[contractType] || [];
+
+    if (!contracts[contractIndex]) {
+      throw new Error(
+        `Contract at index ${contractIndex} does not exist in ${contractType}.`
+      );
+    }
+
+    // Actualizar el estado del contrato
+    contracts[contractIndex].status = newStatus;
+    targetParkingLot[contractType] = contracts;
+    updatedParkingSpaces[parkingLotIndex] = targetParkingLot;
+
+    // Actualizar Firestore con los datos modificados
     await updateDoc(blockRef, { parkingSpaces: updatedParkingSpaces });
 
     return true;

@@ -16,9 +16,14 @@ import {
 export class UsersService {
   constructor(private firestore: Firestore, private auth: Auth) {}
 
-  async getUsers() {
+  async getUsers(todos: boolean = true) {
     const usersRef = collection(this.firestore, 'users');
-    const usersQuery = query(usersRef, where('rol', '!=', 'admin'));
+    const constraints = [where('rol', '!=', 'admin')];
+    if (!todos) {
+      console.log('entro');
+      constraints.push(where('actualizarPerfil', '==', false));
+    }
+    const usersQuery = query(usersRef, ...constraints);
     const usersSnapshot = await getDocs(usersQuery);
     const activeusers = usersSnapshot.docs.map((doc) => ({
       ...doc.data(),
@@ -29,7 +34,9 @@ export class UsersService {
   async updateUser(user: any) {
     console.log(user);
     const userCollectionRef = collection(this.firestore, 'users');
-    const userQuery = query(userCollectionRef, where('id', '==', user.id));
+    const constraints = [where('id', '==', user.id)];
+
+    const userQuery = query(userCollectionRef, ...constraints);
 
     return getDocs(userQuery).then((querySnapshot) => {
       if (querySnapshot.empty) {

@@ -1,0 +1,19 @@
+<div class="p-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-4">Detalles del Evento</h2>
+
+    <div class="mb-4">
+        <p><strong>Título:</strong> {{ event.title }}</p>
+        <p><strong>Inicio:</strong> {{ event.start | date: 'fullDate' }} {{ event.start | date: 'shortTime' }}</p>
+        <p><strong>Fin:</strong> {{ event.end | date: 'fullDate' }} {{ event.end | date: 'shortTime' }}</p>
+        <p><strong>Tipo:</strong> {{ contractType }}</p>
+    </div>
+
+    <div class="flex justify-end space-x-4">
+        <button (click)="close()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+            Cancelar
+        </button>
+        <button (click)="markAsInactive()" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+            Eliminar
+        </button>
+    </div>
+</div>

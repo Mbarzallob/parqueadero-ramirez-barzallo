@@ -5,105 +5,153 @@
         {{ errorMessage }}
     </div>
 
-    <p class="text-gray-600">
-        <strong>Fecha seleccionada:</strong> {{ startDate | date: 'fullDate' }}
-    </p>
 
-    <div>
-        <h3 class="text-lg font-medium text-gray-700 mb-2">Selecciona una opción:</h3>
-        <div class="grid grid-cols-4 gap-2">
-            <button *ngFor="let option of ['hora', 'dia', 'semana', 'mes']" (click)="selectOption(option)"
-                [class.bg-blue-500]="option === selectedOption" [class.text-white]="option === selectedOption"
-                class="px-4 py-2 border border-gray-300 rounded-md text-center hover:bg-blue-100">
-                {{ option | titlecase }}
+
+    <div *ngIf="step ===0">
+        <p class="text-gray-600">
+            <strong>Fecha seleccionada:</strong> {{ startDate | date: 'fullDate' }}
+        </p>
+        <div>
+            <h3 class="text-lg font-medium text-gray-700 mb-2">Selecciona una opción:</h3>
+            <div class="grid grid-cols-4 gap-2">
+                <button *ngFor="let option of ['hora', 'dia', 'semana', 'mes']" (click)="selectOption(option)"
+                    [class.bg-blue-500]="option === selectedOption" [class.text-white]="option === selectedOption"
+                    class="px-4 py-2 border border-gray-300 rounded-md text-center hover:bg-blue-100">
+                    {{ option | titlecase }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Rango por hora -->
+        <div *ngIf="selectedOption === 'hora'" class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de horas:</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="start-time" class="block text-sm font-medium text-gray-700">Hora inicio:</label>
+                    <input id="start-time" type="time" [(ngModel)]="startTime" [min]="currentTime"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+                <div>
+                    <label for="end-time" class="block text-sm font-medium text-gray-700">Hora fin:</label>
+                    <input id="end-time" type="time" [(ngModel)]="endTime" [min]="startTime"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Rango por día -->
+        <div *ngIf="selectedOption === 'dia'" class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de días:</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="start-date" class="block text-sm font-medium text-gray-700">Día inicio:</label>
+                    <input id="start-date" type="date" [(ngModel)]="startDate" [min]="currentDate"
+                        (ngModelChange)="updateStartDate($event)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+                <div>
+                    <label for="end-date" class="block text-sm font-medium text-gray-700">Día fin:</label>
+                    <input id="end-date" type="date" [(ngModel)]="endDate" [min]="startDate"
+                        (ngModelChange)="updateEndDate($event)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Rango por semana -->
+        <div *ngIf="selectedOption === 'semana'" class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de semanas:</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="start-week" class="block text-sm font-medium text-gray-700">Semana inicio:</label>
+                    <input id="start-week" type="date" [(ngModel)]="startDate" [min]="currentDate"
+                        (ngModelChange)="updateStartDate($event)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+                <div>
+                    <label for="end-week" class="block text-sm font-medium text-gray-700">Semana fin:</label>
+                    <input id="end-week" type="date" [(ngModel)]="endDate" [min]="startDate"
+                        (ngModelChange)="updateEndDate($event)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Rango por mes -->
+        <!-- Rango por mes -->
+        <div *ngIf="selectedOption === 'mes'" class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de meses:</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="start-date" class="block text-sm font-medium text-gray-700">Mes inicio (primer
+                        día):</label>
+                    <input id="start-date" type="date" [(ngModel)]="startDate" [min]="currentDate"
+                        (ngModelChange)="updateStartDate($event)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+                <div>
+                    <label for="end-date" class="block text-sm font-medium text-gray-700">Mes fin (último día):</label>
+                    <input id="end-date" type="date" [(ngModel)]="endDate" [min]="startDate"
+                        (ngModelChange)="updateEndDate($event)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Botones de acción -->
+        <div class="flex justify-end mt-6 space-x-3">
+            <button (click)="cancel()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                Cancelar
+            </button>
+            <button (click)="save()"
+                [disabled]="!selectedOption || (selectedOption === 'hora' && (!startTime || !endTime))"
+                class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-400">
+                Siguiente
             </button>
         </div>
     </div>
+    <div *ngIf="step === 1">
+        <h2 class="text-lg font-medium text-gray-700">Selecciona el usuario que contratará</h2>
 
-    <!-- Rango por hora -->
-    <div *ngIf="selectedOption === 'hora'" class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de horas:</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="start-time" class="block text-sm font-medium text-gray-700">Hora inicio:</label>
-                <input id="start-time" type="time" [(ngModel)]="startTime" [min]="currentTime"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
-            <div>
-                <label for="end-time" class="block text-sm font-medium text-gray-700">Hora fin:</label>
-                <input id="end-time" type="time" [(ngModel)]="endTime" [min]="startTime"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
+        <!-- Buscador -->
+        <div class="mb-4">
+            <label for="search-user" class="block text-sm font-medium text-gray-700">Buscar usuario:</label>
+            <input id="search-user" type="text" [(ngModel)]="searchQuery" (input)="filterUsers()"
+                placeholder="Escribe el nombre o correo del usuario"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" />
         </div>
-    </div>
 
-    <!-- Rango por día -->
-    <div *ngIf="selectedOption === 'dia'" class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de días:</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="start-date" class="block text-sm font-medium text-gray-700">Día inicio:</label>
-                <input id="start-date" type="date" [(ngModel)]="startDate" [min]="currentDate"
-                    (ngModelChange)="updateStartDate($event)"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
-            <div>
-                <label for="end-date" class="block text-sm font-medium text-gray-700">Día fin:</label>
-                <input id="end-date" type="date" [(ngModel)]="endDate" [min]="startDate"
-                    (ngModelChange)="updateEndDate($event)"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
+        <!-- Tabla de usuarios -->
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border border-gray-300 px-4 py-2">Nombre</th>
+                        <th class="border border-gray-300 px-4 py-2">Correo</th>
+                        <th class="border border-gray-300 px-4 py-2">Teléfono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of filteredUsers" (click)="selectUser(user)"
+                        [class.bg-blue-100]="selectedUser?.id === user.id" class="cursor-pointer hover:bg-gray-100">
+                        <td class="border border-gray-300 px-4 py-2">{{ user.nombre }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ user.apellido }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ user.email }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
 
-    <!-- Rango por semana -->
-    <div *ngIf="selectedOption === 'semana'" class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de semanas:</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="start-week" class="block text-sm font-medium text-gray-700">Semana inicio:</label>
-                <input id="start-week" type="date" [(ngModel)]="startDate" [min]="currentDate"
-                    (ngModelChange)="updateStartDate($event)"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
-            <div>
-                <label for="end-week" class="block text-sm font-medium text-gray-700">Semana fin:</label>
-                <input id="end-week" type="date" [(ngModel)]="endDate" [min]="startDate"
-                    (ngModelChange)="updateEndDate($event)"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
+        <!-- Botones de acción -->
+        <div class="flex justify-end mt-6 space-x-3">
+            <button (click)="previousStep()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                Anterior
+            </button>
+            <button (click)="guardar()" [disabled]="!selectedUser"
+                class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-400">
+                Guardar
+            </button>
         </div>
-    </div>
-
-    <!-- Rango por mes -->
-    <!-- Rango por mes -->
-    <div *ngIf="selectedOption === 'mes'" class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-700">Selecciona el rango de meses:</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="start-date" class="block text-sm font-medium text-gray-700">Mes inicio (primer día):</label>
-                <input id="start-date" type="date" [(ngModel)]="startDate" [min]="currentDate"
-                    (ngModelChange)="updateStartDate($event)"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
-            <div>
-                <label for="end-date" class="block text-sm font-medium text-gray-700">Mes fin (último día):</label>
-                <input id="end-date" type="date" [(ngModel)]="endDate" [min]="startDate"
-                    (ngModelChange)="updateEndDate($event)"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Botones de acción -->
-    <div class="flex justify-end mt-6 space-x-3">
-        <button (click)="cancel()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
-            Cancelar
-        </button>
-        <button (click)="save()" [disabled]="!selectedOption || (selectedOption === 'hora' && (!startTime || !endTime))"
-            class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-400">
-            Guardar
-        </button>
     </div>
 </div>

@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ParkingService } from '../../services/parking/parking.service';
-import { co } from '@fullcalendar/core/internal-common';
+import { UsersService } from '../../services/users/users.service';
 
 @Component({
   selector: 'app-contract-modal',
@@ -25,11 +25,18 @@ export class ContractModalComponent implements OnInit {
   currentDate: string = ''; // Fecha mínima para inputs de tipo date
   currentTime: string = ''; // Hora mínima para inputs de tipo time
   errorMessage: string = '';
+  step: number = 0;
+  finalData: any;
+  searchQuery: string = '';
+  filteredUsers: any[] = [];
+  selectedUser: any = null;
+  users: any[] = [];
   constructor(
     public dialogRef: MatDialogRef<ContractModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private parkingService: ParkingService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private usersService: UsersService
   ) {}
 
   ngOnInit(): void {
@@ -180,6 +187,27 @@ export class ContractModalComponent implements OnInit {
 
     return true;
   }
+  filterUsers(): void {
+    const query = this.searchQuery.toLowerCase();
+
+    this.filteredUsers = this.users.filter(
+      (user) =>
+        (user.nombre || '').toLowerCase().includes(query) ||
+        (user.email || '').toLowerCase().includes(query) ||
+        (user.apellido || '').includes(query)
+    );
+  }
+
+  // Seleccionar un usuario
+  selectUser(user: any): void {
+    this.selectedUser = user;
+    console.log(user);
+  }
+
+  // Ir al paso anterior
+  previousStep(): void {
+    this.step = Math.max(0, this.step - 1);
+  }
 
   async save() {
     if (this.errorMessage != '') return;
@@ -275,17 +303,6 @@ export class ContractModalComponent implements OnInit {
       }
     }
 
-    console.log([
-      this.blockId,
-      this.parkingSpaceId,
-      typeofContract,
-      {
-        fechaInicio: new Date(this.startDate + 'T' + this.startTime),
-        fechaFin: new Date(this.endDate + 'T' + this.endTime),
-        idUser: 'asdf', // Cambiar por el ID real del usuario
-      },
-    ]);
-
     const contractData = {
       fechaInicio: new Date(
         this.startDate +
@@ -297,17 +314,42 @@ export class ContractModalComponent implements OnInit {
           'T' +
           (this.selectedOption === 'hora' ? this.endTime : '00:00:00')
       ),
-      idUser: 'asdf', // Cambiar por el ID real del usuario
+      idUser: '', // Cambiar por el ID real del usuario
     };
 
-    await this.parkingService.addContractToParkingLot(
-      this.blockId,
-      this.parkingSpaceId,
-      typeofContract,
-      contractData
-    );
+    this.step = 1;
 
-    this.dialogRef.close();
+    this.finalData = {
+      blockId: this.blockId,
+      parkingSpaceId: this.parkingSpaceId,
+      typeofContract: typeofContract,
+      contractData: contractData,
+    };
+    try {
+      this.users = await this.usersService.getUsers(false);
+      this.filteredUsers = this.users;
+    } catch (e) {
+      console.error(e);
+      this.errorMessage = (e as Error).message;
+    }
+  }
+  guardar() {
+    this.finalData.contractData.idUser = this.selectedUser.id;
+    console.log(this.finalData);
+    this.parkingService
+      .addContractToParkingLot(
+        this.finalData.blockId,
+        this.finalData.parkingSpaceId,
+        this.finalData.typeofContract,
+        this.finalData.contractData
+      )
+      .then(() => {
+        this.dialogRef.close();
+      })
+      .catch((e) => {
+        console.error(e);
+        this.errorMessage = (e as Error).message;
+      });
   }
 
   cancel(): void {
