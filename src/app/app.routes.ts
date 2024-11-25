@@ -57,6 +57,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'admin/tarifas',
+        loadComponent: () =>
+          import('./pages/admin/tarifas/tarifas.component').then(
+            (m) => m.TarifasComponent
+          ),
+      },
+      {
         path: 'admin/users',
         loadComponent: () =>
           import('./pages/admin/users/users.component').then(
