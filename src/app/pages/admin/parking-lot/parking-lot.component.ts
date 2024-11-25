@@ -10,6 +10,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { MatDialog } from '@angular/material/dialog';
 import { ContractModalComponent } from '../../../modals/contract-modal/contract-modal.component';
 import { EventModalComponent } from '../../../modals/event-modal/event-modal.component';
+import { timestampToDate } from '../../../utils/firebase-helper';
 
 @Component({
   selector: 'app-parking-lot',
@@ -42,13 +43,16 @@ export class ParkingLotComponent {
     eventClick: this.handleEventClick.bind(this),
     dateClick: this.openContractModal.bind(this),
   };
+  horarios: any[] = [];
+
   ocupiedDates: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private parkingService: ParkingService,
     private dialog: MatDialog
   ) {}
-  ngOnInit() {
+  async ngOnInit() {
+    this.horarios = await this.parkingService.getHorarios();
     this.route.queryParams.subscribe((params) => {
       this.parkingService
         .getParkingLot(params['blockId'], params['parkingId'])
@@ -59,6 +63,7 @@ export class ParkingLotComponent {
         });
     });
   }
+
   generateEventsFromParkingLot(parkingLot: any): any[] {
     const events: any[] = [];
 
@@ -147,6 +152,25 @@ export class ParkingLotComponent {
       });
     });
   }
+  isDateWithinHorarios(date: Date): boolean {
+    console.log('Fecha seleccionada (antes de ajuste):', date);
+
+    // Ajustar la hora de `date` a las 23:59:59
+    const adjustedDate = new Date(date);
+    adjustedDate.setHours(23, 59, 59, 999);
+
+    console.log('Fecha seleccionada (ajustada):', adjustedDate);
+
+    return this.horarios.some((horario) => {
+      const inicio = timestampToDate(horario.inicio);
+      const fin = timestampToDate(horario.fin);
+
+      console.log('Horario:', { inicio, fin });
+
+      // Comparar la fecha ajustada con los horarios
+      return adjustedDate >= inicio && date <= fin;
+    });
+  }
 
   openContractModal(data: any): void {
     const now = new Date();
@@ -163,6 +187,12 @@ export class ParkingLotComponent {
       alert('No puedes seleccionar una fecha pasada');
       return;
     }
+    if (!this.isDateWithinHorarios(data.date)) {
+      alert(
+        'La fecha seleccionada está fuera del horario permitido. Por favor selecciona otra fecha.'
+      );
+      return;
+    }
     const dialog = this.dialog.open(ContractModalComponent, {
       data: {
         date: data.date,
@@ -173,6 +203,7 @@ export class ParkingLotComponent {
           hora: this.parkingLot.precioPorHora,
           semanal: this.parkingLot.precioPorSemana,
         },
+        horarios: this.horarios,
       },
     });
     dialog.afterClosed().subscribe(() => {

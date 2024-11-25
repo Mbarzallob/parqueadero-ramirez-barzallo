@@ -26,4 +26,9 @@ export class HeaderComponent {
     }
     return this.authService.obtenerRol() == 'admin';
   }
+  isMenuOpen: boolean = false;
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 }

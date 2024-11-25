@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ParkingService } from '../../services/parking/parking.service';
 import { UsersService } from '../../services/users/users.service';
+import { timestampToDate } from '../../utils/firebase-helper';
 
 @Component({
   selector: 'app-contract-modal',
@@ -32,6 +33,7 @@ export class ContractModalComponent implements OnInit {
   selectedUser: any = null;
   users: any[] = [];
   price: number = 0;
+  horarios: any[] = [];
   constructor(
     public dialogRef: MatDialogRef<ContractModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -56,6 +58,7 @@ export class ContractModalComponent implements OnInit {
     this.startTime = this.formatTime(startHour, now.getMinutes());
     this.endTime = this.formatTime(endHour, now.getMinutes());
     this.ocupiedDates = this.data.ocupiedDates;
+    this.horarios = this.data.horarios;
     this.route.queryParams.subscribe((params) => {
       this.blockId = params['blockId'];
       this.parkingSpaceId = params['parkingId'];
@@ -302,6 +305,47 @@ export class ContractModalComponent implements OnInit {
         this.errorMessage = 'El rango de fechas seleccionado está ocupado.';
         return;
       }
+    }
+
+    for (const horario of this.horarios) {
+      const inicio = timestampToDate(horario.inicio);
+      const fin = timestampToDate(horario.fin);
+
+      const selectedStart = new Date(
+        this.startDate +
+          'T' +
+          (this.selectedOption === 'hora' ? this.startTime : '00:00:00')
+      );
+      const selectedEnd = new Date(
+        this.endDate +
+          'T' +
+          (this.selectedOption === 'hora' ? this.endTime : '23:59:59')
+      );
+
+      console.log('Horario:', { inicio, fin });
+
+      // **Validar SOLO para la opción "hora"**
+      if (this.selectedOption === 'hora') {
+        const validStartTime = new Date(selectedStart);
+        validStartTime.setHours(inicio.getHours(), inicio.getMinutes(), 0, 0);
+
+        const validEndTime = new Date(selectedStart);
+        validEndTime.setHours(fin.getHours(), fin.getMinutes(), 0, 0);
+
+        if (
+          selectedStart < validStartTime || // El inicio es antes del horario permitido
+          selectedStart >= validEndTime || // El inicio es después o igual al fin permitido
+          selectedEnd <= validStartTime || // El fin es antes o igual al inicio permitido
+          selectedEnd > validEndTime // El fin es después del horario permitido
+        ) {
+          console.log(horario);
+          this.errorMessage =
+            'El rango seleccionado está fuera del horario permitido.';
+          return;
+        }
+      }
+
+      // **Validaciones para día, semana o mes**
     }
 
     const contractData = {

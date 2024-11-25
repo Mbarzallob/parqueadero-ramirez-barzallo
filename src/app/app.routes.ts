@@ -57,6 +57,13 @@ export const routes: Routes = [
           ).then((m) => m.BlockManagementComponent),
       },
       {
+        path: 'admin/horario-management',
+        loadComponent: () =>
+          import(
+            './pages/admin/horario-management/horario-management.component'
+          ).then((m) => m.HorarioManagementComponent),
+      },
+      {
         path: 'admin/parking-lot',
         loadComponent: () =>
           import('./pages/admin/parking-lot/parking-lot.component').then(

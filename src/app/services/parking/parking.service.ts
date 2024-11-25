@@ -142,4 +142,14 @@ export class ParkingService {
 
     return true;
   }
+  async getHorarios() {
+    const horariosRef = collection(this.firestore, 'horario');
+    const horariosSnapshot = await getDocs(horariosRef);
+    const horarios = horariosSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return horarios;
+  }
 }
