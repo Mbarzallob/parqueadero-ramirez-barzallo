@@ -1,12 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { signOut } from '@firebase/auth';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -47,7 +41,7 @@ export class RegisterComponent {
   registrarse() {
     const data = this.formRegister.getRawValue();
 
-    this.authService.registerWithUserAndPass(data).subscribe(
+    this.authService.register(data).subscribe(
       (resp) => {
         this.router.navigate(['/']);
       },
@@ -57,17 +51,17 @@ export class RegisterComponent {
     );
   }
   registrarseConGoogle() {
-    this.authService.registerWithGoogle().subscribe(
-      (resp) => {
-        this.router.navigate(['/']);
-      },
-      (error) => {
-        console.log(error);
-        this.error = this.getErrorMessage(error.code);
-      }
-    );
+    // this.authService.registerWithGoogle().subscribe(
+    //   (resp) => {
+    //     this.router.navigate(['/']);
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //     this.error = this.getErrorMessage(error.code);
+    //   }
+    // );
   }
   cierraSesion() {
-    this.authService.logout();
+    //this.authService.logout();
   }
 }

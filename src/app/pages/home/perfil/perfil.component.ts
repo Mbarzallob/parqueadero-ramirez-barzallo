@@ -23,24 +23,24 @@ export class PerfilComponent implements OnInit {
     private p: ParkingService
   ) {}
   ngOnInit(): void {
-    this.authService.getInformationUser().subscribe((user) => {
-      this.form.setValue({
-        nombre: user.nombre,
-        apellido: user.apellido,
-        telefono: user.telefono,
-        genero: user.genero,
-        fechaNacimiento: user.fechaNacimiento,
-      });
-    });
+    // this.authService.getInformationUser().subscribe((user) => {
+    //   this.form.setValue({
+    //     nombre: user.nombre,
+    //     apellido: user.apellido,
+    //     telefono: user.telefono,
+    //     genero: user.genero,
+    //     fechaNacimiento: user.fechaNacimiento,
+    //   });
+    // });
   }
   actualizarInfo() {
-    const formValue = this.form.getRawValue();
-    const user = {
-      ...formValue,
-      fechaNacimiento: formValue.fechaNacimiento
-        ? new Date(formValue.fechaNacimiento)
-        : null,
-    };
-    this.authService.updateUserInfo(user);
+    // const formValue = this.form.getRawValue();
+    // const user = {
+    //   ...formValue,
+    //   fechaNacimiento: formValue.fechaNacimiento
+    //     ? new Date(formValue.fechaNacimiento)
+    //     : null,
+    // };
+    // this.authService.updateUserInfo(user);
   }
 }

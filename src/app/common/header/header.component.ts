@@ -15,16 +15,16 @@ export class HeaderComponent {
     private authService: AuthenticationService,
     private router: Router
   ) {}
-  isLogged$ = this.authService.isLogged();
+  // isLogged$ = this.authService.isLogged();
   logout() {
-    this.authService.logout();
+    // this.authService.logout();
     this.router.navigate(['/']);
   }
   esAdmin() {
-    if (!this.isLogged$) {
-      return false;
-    }
-    return this.authService.obtenerRol() == 'admin';
+    // if (!this.isLogged$) {
+    //   return false;
+    // }
+    // return this.authService.obtenerRol() == 'admin';
   }
   isMenuOpen: boolean = false;
 

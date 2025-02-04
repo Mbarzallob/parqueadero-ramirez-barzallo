@@ -6,13 +6,24 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-
-    provideAuth(() => getAuth()),
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
     provideFirestore(() => getFirestore()),
     provideFirebaseApp(() =>
       initializeApp({
@@ -25,7 +36,5 @@ export const appConfig: ApplicationConfig = {
         measurementId: 'G-STZVLSWM54',
       })
     ),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
   ],
 };

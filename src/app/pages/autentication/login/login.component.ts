@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import {
+  KEYS,
+  LocalstorageService,
+} from '../../../services/localstorage/localstorage.service';
 
 @Component({
   selector: 'app-login',
@@ -18,18 +22,17 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private localStorage: LocalstorageService
   ) {}
 
   iniciaSesion() {
     const data = this.formLogin.getRawValue();
-    const user: any = {
-      email: data.email,
-      password: data.password,
-    };
-    this.authService.signIn(user).subscribe(
+    this.authService.login(data.email, data.password).subscribe(
       (user) => {
         console.log(user);
+        this.localStorage.saveValue(KEYS.JWT_KEY, user.data.jwt);
+        this.localStorage.saveValue(KEYS.ROL, user.data.rol);
         this.router.navigate(['/']);
       },
       (error) => {
@@ -38,13 +41,13 @@ export class LoginComponent {
     );
   }
   registrarseConGoogle() {
-    this.authService.registerWithGoogle().subscribe(
-      (resp) => {
-        this.router.navigate(['/']);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    // this.authService.registerWithGoogle().subscribe(
+    //   (resp) => {
+    //     this.router.navigate(['/']);
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
   }
 }
