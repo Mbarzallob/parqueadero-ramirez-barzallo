@@ -10,11 +10,10 @@ import { MensajesService } from '../../../services/mensajes/mensajes.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-contacto',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './contacto.component.html',
-  styleUrl: './contacto.component.scss',
+    selector: 'app-contacto',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './contacto.component.html',
+    styleUrl: './contacto.component.scss'
 })
 export class ContactoComponent {
   constructor(

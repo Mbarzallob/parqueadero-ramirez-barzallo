@@ -4,11 +4,10 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ParkingService } from '../../../services/parking/parking.service';
 
 @Component({
-  selector: 'app-perfil',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './perfil.component.html',
-  styleUrl: './perfil.component.scss',
+    selector: 'app-perfil',
+    imports: [ReactiveFormsModule],
+    templateUrl: './perfil.component.html',
+    styleUrl: './perfil.component.scss'
 })
 export class PerfilComponent implements OnInit {
   form = new FormGroup({

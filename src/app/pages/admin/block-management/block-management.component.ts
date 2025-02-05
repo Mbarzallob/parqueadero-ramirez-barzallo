@@ -10,11 +10,10 @@ import { BlocksService } from '../../../services/blocks/blocks.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-block-management',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './block-management.component.html',
-  styleUrl: './block-management.component.scss',
+    selector: 'app-block-management',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './block-management.component.html',
+    styleUrl: './block-management.component.scss'
 })
 export class BlockManagementComponent implements OnInit {
   blockForm: FormGroup;

@@ -6,11 +6,10 @@ import { timestampToDate } from '../../../utils/firebase-helper';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-parking-lots',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
-  templateUrl: './parking-lots.component.html',
-  styleUrl: './parking-lots.component.scss',
+    selector: 'app-parking-lots',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+    templateUrl: './parking-lots.component.html',
+    styleUrl: './parking-lots.component.scss'
 })
 export class ParkingLotsComponent implements OnInit {
   blocksOriginal: any[] = []; // Lista completa de bloques

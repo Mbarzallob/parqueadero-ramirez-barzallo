@@ -5,11 +5,10 @@ import { TimestampToDatePipe } from '../../../pipes/timestamp-to-date.pipe';
 import { ActualizarUsuarioComponent } from '../../../modals/actualizar-usuario/actualizar-usuario.component';
 import { MatDialog } from '@angular/material/dialog';
 @Component({
-  selector: 'app-users',
-  standalone: true,
-  imports: [CommonModule, TimestampToDatePipe],
-  templateUrl: './users.component.html',
-  styleUrl: './users.component.scss',
+    selector: 'app-users',
+    imports: [CommonModule, TimestampToDatePipe],
+    templateUrl: './users.component.html',
+    styleUrl: './users.component.scss'
 })
 export class UsersComponent implements OnInit {
   users: any[] = [];

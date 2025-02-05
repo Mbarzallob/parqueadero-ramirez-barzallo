@@ -8,11 +8,10 @@ import { UsersService } from '../../services/users/users.service';
 import { timestampToDate } from '../../utils/firebase-helper';
 
 @Component({
-  selector: 'app-contract-modal',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './contract-modal.component.html',
-  styleUrl: './contract-modal.component.scss',
+    selector: 'app-contract-modal',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './contract-modal.component.html',
+    styleUrl: './contract-modal.component.scss'
 })
 export class ContractModalComponent implements OnInit {
   selectedOption: string = ''; // Opción seleccionada (hora, día, semana, mes)

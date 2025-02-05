@@ -13,11 +13,10 @@ import { EventModalComponent } from '../../../modals/event-modal/event-modal.com
 import { timestampToDate } from '../../../utils/firebase-helper';
 
 @Component({
-  selector: 'app-parking-lot',
-  standalone: true,
-  imports: [FullCalendarModule],
-  templateUrl: './parking-lot.component.html',
-  styleUrl: './parking-lot.component.scss',
+    selector: 'app-parking-lot',
+    imports: [FullCalendarModule],
+    templateUrl: './parking-lot.component.html',
+    styleUrl: './parking-lot.component.scss'
 })
 export class ParkingLotComponent {
   parkingLot: any;

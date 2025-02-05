@@ -4,11 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RatesService } from '../../../services/rates/rates.service';
 
 @Component({
-  selector: 'app-tarifas',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './tarifas.component.html',
-  styleUrl: './tarifas.component.scss',
+    selector: 'app-tarifas',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './tarifas.component.html',
+    styleUrl: './tarifas.component.scss'
 })
 export class TarifasComponent implements OnInit {
   rates: any[] = [];

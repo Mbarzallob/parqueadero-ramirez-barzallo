@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-event-modal',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './event-modal.component.html',
-  styleUrl: './event-modal.component.scss',
+    selector: 'app-event-modal',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './event-modal.component.html',
+    styleUrl: './event-modal.component.scss'
 })
 export class EventModalComponent {
   event: any;

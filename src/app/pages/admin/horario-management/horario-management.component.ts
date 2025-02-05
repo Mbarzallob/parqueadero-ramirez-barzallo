@@ -12,16 +12,15 @@ import { TimestampToDatePipe } from '../../../pipes/timestamp-to-date.pipe';
 import { timestampToDate } from '../../../utils/firebase-helper';
 
 @Component({
-  selector: 'app-horario-management',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TimestampToDatePipe,
-  ],
-  templateUrl: './horario-management.component.html',
-  styleUrl: './horario-management.component.scss',
+    selector: 'app-horario-management',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TimestampToDatePipe,
+    ],
+    templateUrl: './horario-management.component.html',
+    styleUrl: './horario-management.component.scss'
 })
 export class HorarioManagementComponent {
   horarioForm: FormGroup;
