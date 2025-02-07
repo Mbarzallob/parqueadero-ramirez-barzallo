@@ -1,10 +1,17 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { inject } from '@angular/core';
-import { first, map } from 'rxjs';
+import {
+  KEYS,
+  LocalstorageService,
+} from '../../services/localstorage/localstorage.service';
 
 export const loginGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthenticationService);
+  const localStorageService = inject(LocalstorageService);
   const router = inject(Router);
+  const jwt = localStorageService.getValue(KEYS.JWT_KEY);
+  if (jwt) {
+    router.navigate(['/']);
+    return false;
+  }
   return true;
 };

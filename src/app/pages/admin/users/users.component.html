@@ -1,6 +1,6 @@
 <div class="t-relative t-overflow-x-auto">
-    <table class="t-w-full t-text-xs t-text-left t-rtl:text-right t-text-gray-500 t-dark:text-gray-400">
-        <thead class="t-text-xs t-text-gray-700 t-uppercase t-bg-gray-50 t-dark:bg-gray-700 t-dark:text-gray-400">
+    <table class="t-w-full t-text-xs t-text-left t-rtl:text-right t-text-gray-500 dark:t-text-gray-400">
+        <thead class="t-text-xs t-text-gray-700 t-uppercase t-bg-gray-50 dark:t-bg-gray-700 dark:t-text-gray-400">
             <tr>
                 <th class="t-px-6 t-py-3">
                     Codigo
@@ -31,34 +31,33 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="t-border-b t-dark:border-gray-700" *ngFor="let user of users;index as i"
-                [ngClass]="user.actualizarPerfil? 't-bg-red-500 t-text-white':'t-bg-green-100 t-text-gray-600'">
+            <tr class="t-border-b t-dark:border-gray-700" *ngFor="let user of users;index as i">
                 <th scope="row" class="t-px-6 t-py-4 t-font-medium t-whitespace-nowrap">
                     {{user.id}}
                 </th>
                 <td class="t-px-6 t-py-4">
-                    {{user.nombre}}
+                    {{user.firstName}}
                 </td>
                 <td class="t-px-6 t-py-4">
-                    {{user.apellido}}
+                    {{user.lastName}}
                 </td>
                 <td class="t-px-6 t-py-4">
                     {{user.email}}
                 </td>
                 <td class="t-px-6 t-py-4">
-                    {{user.fechaRegistro | timestampToDate}}
+                    {{user.creationDate }}
                 </td>
                 <td class="t-px-6 t-py-4">
-                    {{user.genero}}
+                    {{user.gender}}
                 </td>
                 <td class="t-px-6 t-py-4">
-                    {{user.fechaNacimiento}}
+                    {{user.birthDate}}
                 </td>
                 <td class="t-px-6 t-py-4">
-                    {{user.telefono}}
+                    {{user.phone}}
                 </td>
                 <td class="t-px-6 t-py-4">
-                    <button (click)="openDialog(user)" class="t-bg-blue-400 t-rounded-sm t-px-3 t-py-1">
+                    <button class="t-bg-blue-400 t-rounded-sm t-px-3 t-py-1">
                         <i class="fas fa-edit"></i>
                     </button>
                 </td>

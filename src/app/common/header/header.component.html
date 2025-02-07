@@ -31,57 +31,57 @@
                             Contacto
                         </a>
                     </li>
-                    <li *ngIf="esAdmin()">
+                    <li>
                         <a routerLink="/admin/users"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 t-border-b t-border-gray-100 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-border-0 lg:hover:t-text-primary-700 lg:t-p-0 dark:t-text-gray-400 lg:dark:hover:t-text-white dark:hover:t-bg-gray-700 dark:hover:t-text-white lg:dark:hover:t-bg-transparent dark:t-border-gray-700">
                             Usuarios
                         </a>
                     </li>
-                    <li *ngIf="esAdmin()">
+                    <li>
                         <a routerLink="/admin/parking-lots"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 t-border-b t-border-gray-100 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-border-0 lg:hover:t-text-primary-700 lg:t-p-0 dark:t-text-gray-400 lg:dark:hover:t-text-white dark:hover:t-bg-gray-700 dark:hover:t-text-white lg:dark:hover:t-bg-transparent dark:t-border-gray-700">
                             Parqueaderos
                         </a>
                     </li>
-                    <li *ngIf="esAdmin()">
+                    <li>
                         <a routerLink="/admin/tarifas"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 t-border-b t-border-gray-100 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-border-0 lg:hover:t-text-primary-700 lg:t-p-0 dark:t-text-gray-400 lg:dark:hover:t-text-white dark:hover:t-bg-gray-700 dark:hover:t-text-white lg:dark:hover:t-bg-transparent dark:t-border-gray-700">
                             Tarifas
                         </a>
                     </li>
-                    <li *ngIf="esAdmin()">
+                    <li>
                         <a routerLink="/admin/block-management"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 t-border-b t-border-gray-100 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-border-0 lg:hover:t-text-primary-700 lg:t-p-0 dark:t-text-gray-400 lg:dark:hover:t-text-white dark:hover:t-bg-gray-700 dark:hover:t-text-white lg:dark:hover:t-bg-transparent dark:t-border-gray-700">
                             Gestionar bloques
                         </a>
                     </li>
-                    <li *ngIf="esAdmin()">
+                    <li>
                         <a routerLink="/admin/horario-management"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 t-border-b t-border-gray-100 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-border-0 lg:hover:t-text-primary-700 lg:t-p-0 dark:t-text-gray-400 lg:dark:hover:t-text-white dark:hover:t-bg-gray-700 dark:hover:t-text-white lg:dark:hover:t-bg-transparent dark:t-border-gray-700">
                             Gestionar horarios
                         </a>
                     </li>
-                    <!-- Opciones de sesión -->
+
                     <li>
-                        <a routerLink="/perfil"
+                        <a *ngIf="isLogged()" routerLink="/perfil"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-p-0 dark:t-text-gray-400 dark:hover:t-bg-gray-700 dark:hover:t-text-white">
                             Perfíl
                         </a>
                     </li>
                     <li>
-                        <a (click)="logout()"
+                        <a *ngIf="isLogged()" (click)="logout()"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-p-0 dark:t-text-gray-400 dark:hover:t-bg-gray-700 dark:hover:t-text-white">
                             Cerrar sesión
                         </a>
                     </li>
                     <li>
-                        <a routerLink="/auth/login"
+                        <a *ngIf="!isLogged()" routerLink="/auth/login"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-p-0 dark:t-text-gray-400 dark:hover:t-bg-gray-700 dark:hover:t-text-white">
                             Inicia sesión
                         </a>
                     </li>
                     <li>
-                        <a routerLink="/auth/register"
+                        <a *ngIf="!isLogged()" routerLink="/auth/register"
                             class="t-block t-py-2 t-pr-4 t-pl-3 t-text-gray-700 hover:t-bg-gray-50 lg:hover:t-bg-transparent lg:t-p-0 dark:t-text-gray-400 dark:hover:t-bg-gray-700 dark:hover:t-text-white">
                             Regístrate
                         </a>

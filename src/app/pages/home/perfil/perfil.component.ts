@@ -1,45 +1,61 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ParkingService } from '../../../services/parking/parking.service';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { PersonService } from '../../../services/person/person.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { Profile } from '../../../models/person/profile';
 
 @Component({
-    selector: 'app-perfil',
-    imports: [ReactiveFormsModule],
-    templateUrl: './perfil.component.html',
-    styleUrl: './perfil.component.scss'
+  selector: 'app-perfil',
+  imports: [ReactiveFormsModule],
+  templateUrl: './perfil.component.html',
+  styleUrl: './perfil.component.scss',
 })
 export class PerfilComponent implements OnInit {
   form = new FormGroup({
-    nombre: new FormControl(''),
-    apellido: new FormControl(''),
-    telefono: new FormControl(''),
-    genero: new FormControl(''),
-    fechaNacimiento: new FormControl(''),
+    firstName: new FormControl('', [Validators.required]),
+    lastName: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required]),
+    phoneNumber: new FormControl('', [Validators.required]),
+    fechaNacimiento: new FormControl(null as Date | null),
   });
   constructor(
-    private authService: AuthenticationService,
-    private p: ParkingService
+    private personService: PersonService,
+    private message: NzMessageService
   ) {}
   ngOnInit(): void {
-    // this.authService.getInformationUser().subscribe((user) => {
-    //   this.form.setValue({
-    //     nombre: user.nombre,
-    //     apellido: user.apellido,
-    //     telefono: user.telefono,
-    //     genero: user.genero,
-    //     fechaNacimiento: user.fechaNacimiento,
-    //   });
-    // });
+    this.getProfile();
+  }
+
+  getProfile() {
+    this.personService.getProfile().subscribe((response) => {
+      this.form.setValue({
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        email: response.data.email,
+        phoneNumber: response.data.phoneNumber,
+        fechaNacimiento: response.data.fechaNacimiento,
+      });
+    });
   }
   actualizarInfo() {
-    // const formValue = this.form.getRawValue();
-    // const user = {
-    //   ...formValue,
-    //   fechaNacimiento: formValue.fechaNacimiento
-    //     ? new Date(formValue.fechaNacimiento)
-    //     : null,
-    // };
-    // this.authService.updateUserInfo(user);
+    if (this.form.invalid) {
+      this.message.error('Complete todos los campos');
+      return;
+    }
+    this.personService
+      .updateProfile(this.form.getRawValue() as Profile)
+      .subscribe(
+        (response) => {
+          this.message.success('Perfil actualizado');
+        },
+        (error) => {
+          this.message.error(error);
+        }
+      );
   }
 }

@@ -12,6 +12,12 @@ export class LocalstorageService {
   getValue(key: KEYS): string | null {
     return localStorage.getItem(key);
   }
+  removeValue(key: KEYS) {
+    localStorage.removeItem(key);
+  }
+  clear() {
+    localStorage.clear();
+  }
 }
 export enum KEYS {
   JWT_KEY = 'jwt',

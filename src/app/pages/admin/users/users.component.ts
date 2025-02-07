@@ -1,33 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../../services/users/users.service';
 import { CommonModule } from '@angular/common';
-import { TimestampToDatePipe } from '../../../pipes/timestamp-to-date.pipe';
-import { ActualizarUsuarioComponent } from '../../../modals/actualizar-usuario/actualizar-usuario.component';
-import { MatDialog } from '@angular/material/dialog';
+
+import { User } from '../../../models/person/user/user';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
-    selector: 'app-users',
-    imports: [CommonModule, TimestampToDatePipe],
-    templateUrl: './users.component.html',
-    styleUrl: './users.component.scss'
+  selector: 'app-users',
+  imports: [CommonModule],
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss',
 })
 export class UsersComponent implements OnInit {
-  users: any[] = [];
-  constructor(private userService: UsersService, private dialog: MatDialog) {}
+  users: User[] = [];
+  constructor(
+    private userService: UsersService,
+    private message: NzMessageService
+  ) {}
   ngOnInit(): void {
     this.getUsers();
   }
-  async getUsers() {
-    this.users = await this.userService.getUsers();
-    console.log(this.users);
-  }
-  openDialog(user: any) {
-    const dialog = this.dialog.open(ActualizarUsuarioComponent, {
-      data: user,
-      height: '400px',
-      width: '600px',
-    });
-    dialog.afterClosed().subscribe((result) => {
-      this.getUsers();
-    });
+  getUsers() {
+    this.userService.getUsers().subscribe(
+      (response) => {
+        this.users = response.data;
+      },
+      (error) => {
+        this.message.error(error);
+      }
+    );
   }
 }

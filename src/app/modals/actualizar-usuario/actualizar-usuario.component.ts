@@ -8,10 +8,10 @@ import {
 import { UsersService } from '../../services/users/users.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
-    selector: 'app-actualizar-usuario',
-    imports: [ReactiveFormsModule, FormsModule],
-    templateUrl: './actualizar-usuario.component.html',
-    styleUrl: './actualizar-usuario.component.scss'
+  selector: 'app-actualizar-usuario',
+  imports: [ReactiveFormsModule, FormsModule],
+  templateUrl: './actualizar-usuario.component.html',
+  styleUrl: './actualizar-usuario.component.scss',
 })
 export class ActualizarUsuarioComponent implements OnInit {
   userForm = this.fb.group({
@@ -39,7 +39,7 @@ export class ActualizarUsuarioComponent implements OnInit {
       actualizarPerfil: false,
     };
 
-    await this.userService.updateUser(user);
+    // await this.userService.updateUser(user);
     alert('Usuario actualizado correctamente');
 
     this.dialogRef.close();

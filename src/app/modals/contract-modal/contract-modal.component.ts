@@ -8,10 +8,10 @@ import { UsersService } from '../../services/users/users.service';
 import { timestampToDate } from '../../utils/firebase-helper';
 
 @Component({
-    selector: 'app-contract-modal',
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
-    templateUrl: './contract-modal.component.html',
-    styleUrl: './contract-modal.component.scss'
+  selector: 'app-contract-modal',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: './contract-modal.component.html',
+  styleUrl: './contract-modal.component.scss',
 })
 export class ContractModalComponent implements OnInit {
   selectedOption: string = ''; // Opción seleccionada (hora, día, semana, mes)
@@ -405,8 +405,8 @@ export class ContractModalComponent implements OnInit {
       contractData: contractData,
     };
     try {
-      this.users = await this.usersService.getUsers(false);
-      this.filteredUsers = this.users;
+      // this.users = await this.usersService.getUsers(false);
+      // this.filteredUsers = this.users;
     } catch (e) {
       console.error(e);
       this.errorMessage = (e as Error).message;

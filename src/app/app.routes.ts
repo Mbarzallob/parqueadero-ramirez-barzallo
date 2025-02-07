@@ -102,7 +102,7 @@ export const routes: Routes = [
           import('./pages/autentication/login/login.component').then(
             (m) => m.LoginComponent
           ),
-        //canActivate: [loginGuard],
+        canActivate: [loginGuard],
       },
       {
         path: 'register',
@@ -110,7 +110,7 @@ export const routes: Routes = [
           import('./pages/autentication/register/register.component').then(
             (m) => m.RegisterComponent
           ),
-        //canActivate: [loginGuard],
+        canActivate: [loginGuard],
       },
     ],
   },

@@ -3,59 +3,70 @@
     <div class="t-mt-10 t-sm:mx-auto t-sm:w-full t-sm:max-w-sm">
         <div class="t-space-y-6" [formGroup]="formRegister">
             <div>
-                <label for="email" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Correo electrónico</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Correo electrónico</label>
                 <div class="t-mt-2">
-                    <input id="email" name="email" formControlName="email" type="email" autocomplete="email" required
+                    <input formControlName="email" type="email" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
-
+            <div>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Nombre de
+                    usuario</label>
+                <div class="t-mt-2">
+                    <input formControlName="username" required
+                        class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
+                </div>
+            </div>
             <div>
                 <div class="t-flex t-items-center t-justify-between">
-                    <label for="password" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Contraseña</label>
+                    <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Contraseña</label>
                 </div>
                 <div class="t-mt-2">
-                    <input id="password" name="password" formControlName="password" type="password"
-                        autocomplete="current-password" required
+                    <input formControlName="password" type="password" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="nombre" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Nombres</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Identificación</label>
                 <div class="t-mt-2">
-                    <input id="nombre" name="nombre" formControlName="nombre" type="text" autocomplete="nombre" required
+                    <input formControlName="identification" type="text" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="apellido" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Apellidos</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Nombres</label>
                 <div class="t-mt-2">
-                    <input id="apellido" name="apellido" formControlName="apellido" type="text" autocomplete="apellido"
-                        required
+                    <input formControlName="firstName" type="text" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="telefono" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Telefono</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Apellidos</label>
                 <div class="t-mt-2">
-                    <input id="telefono" name="telefono" formControlName="telefono" type="text" autocomplete="telefono"
-                        required
+                    <input formControlName="lastName" type="text" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="genero" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Genero</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Telefono</label>
                 <div class="t-mt-2">
-                    <input id="genero" name="genero" formControlName="genero" type="text" autocomplete="genero" required
+                    <input formControlName="phone" type="text" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="fechaNacimiento" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Fecha de
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Genero</label>
+                <div class="t-mt-2">
+                    <nz-select formControlName="genderId">
+                        <nz-option *ngFor="let g of generos" [nzLabel]="g.description" [nzValue]="g.id"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Fecha de
                     nacimiento</label>
                 <div class="t-mt-2">
-                    <input id="fechaNacimiento" name="fechaNacimiento" formControlName="fechaNacimiento" type="date"
-                        autocomplete="fechaNacimiento" required
+                    <input formControlName="dateOfBirth" type="date" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
@@ -64,16 +75,7 @@
                     class="t-flex t-w-full t-justify-center t-rounded-md t-bg-indigo-600 t-px-3 t-py-1.5 t-text-sm/6 t-font-semibold t-text-white t-shadow-sm t-hover:bg-indigo-500 t-focus-visible:outline t-focus-visible:outline-2 t-focus-visible:outline-offset-2 t-focus-visible:outline-indigo-600">Registrarme</button>
             </div>
         </div>
-        <p class="t-text-center t-my-3 t-text-sm/6 t-text-gray-500">
-            O
-        </p>
-        <button (click)="registrarseConGoogle()"
-            class="t-flex t-w-full t-justify-center t-rounded-md t-bg-gray-200 t-px-3 t-py-1.5 t-text-sm/6 t-font-semibold t-text-gray-800 t-shadow-sm t-hover:bg-white t-focus-visible:outline t-focus-visible-outline-2 t-focus-visible:outline-offset-2 t-focus-visible:outline-indigo-600">
-            Inicia sesion con Google
-        </button>
-        <h1 class="t-text-red-800" *ngIf="error">
-            {{error}}
-        </h1>
+
         <p class="t-mt-10 t-text-center t-text-sm/6 t-text-gray-500">
             Ya tienes una cuenta?
             <a routerLink="../login" class="t-font-semibold t-text-indigo-600 t-hover:text-indigo-500">

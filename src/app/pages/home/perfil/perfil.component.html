@@ -3,41 +3,38 @@
     <div class="t-mt-10 t-sm:mx-auto t-sm:w-full t-sm:max-w-sm">
         <div class="t-space-y-3" [formGroup]="form">
             <div>
-                <label for="nombre" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Nombres</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Nombres</label>
                 <div class="t-mt-2">
-                    <input id="nombre" name="nombre" formControlName="nombre" type="text" autocomplete="nombre" required
+                    <input formControlName="firstName" type="text"
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="apellido" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Apellidos</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Apellidos</label>
                 <div class="t-mt-2">
-                    <input id="apellido" name="apellido" formControlName="apellido" type="text" autocomplete="apellido"
-                        required
+                    <input formControlName="lastName" type="text"
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="telefono" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Telefono</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Correo electrónico</label>
                 <div class="t-mt-2">
-                    <input id="telefono" name="telefono" formControlName="telefono" type="text" autocomplete="telefono"
-                        required
+                    <input formControlName="email" type="text"
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="genero" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Genero</label>
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Telefono</label>
                 <div class="t-mt-2">
-                    <input id="genero" name="genero" formControlName="genero" type="text" autocomplete="genero" required
+                    <input formControlName="phoneNumber" type="text" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
             <div>
-                <label for="fechaNacimiento" class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Fecha de
+                <label class="t-block t-text-sm/6 t-font-medium t-text-gray-900">Fecha de
                     nacimiento</label>
                 <div class="t-mt-2">
-                    <input id="fechaNacimiento" name="fechaNacimiento" formControlName="fechaNacimiento" type="date"
-                        autocomplete="fechaNacimiento" required
+                    <input formControlName="fechaNacimiento" type="date" autocomplete="fechaNacimiento" required
                         class="t-pl-4 t-block t-w-full t-rounded-md t-border-0 t-py-1.5 t-text-gray-900 t-shadow-sm t-ring-1 t-ring-inset t-ring-gray-300 t-placeholder:text-gray-400 t-focus:ring-2 t-focus:ring-inset t-focus:ring-indigo-600 t-sm:text-sm/6">
                 </div>
             </div>
