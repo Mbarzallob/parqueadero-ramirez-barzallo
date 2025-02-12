@@ -1,44 +1,21 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Response } from '../../models/generic/response';
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  getDocs,
-  updateDoc,
-} from '@angular/fire/firestore';
+  RegularSchedule,
+  ScheduleRequest,
+} from '../../models/schedule/regularSchedule';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HorariosService {
-  private horarioCollection = 'horario';
+  constructor(private http: HttpClient) {}
 
-  constructor(private firestore: Firestore) {}
-
-  async getHorarios(): Promise<any[]> {
-    const horarios: any[] = [];
-    const horarioRef = collection(this.firestore, this.horarioCollection);
-    const snapshot = await getDocs(horarioRef);
-    snapshot.forEach((doc) => {
-      horarios.push({ id: doc.id, ...doc.data() });
-    });
-    return horarios;
+  getHorarios() {
+    return this.http.get<Response<RegularSchedule[]>>('schedule');
   }
-
-  async addHorario(horario: any): Promise<void> {
-    const horarioRef = collection(this.firestore, this.horarioCollection);
-    await addDoc(horarioRef, horario);
-  }
-
-  async updateHorario(id: string, horario: any): Promise<void> {
-    const horarioDoc = doc(this.firestore, `${this.horarioCollection}/${id}`);
-    await updateDoc(horarioDoc, horario);
-  }
-
-  async deleteHorario(id: string): Promise<void> {
-    const horarioDoc = doc(this.firestore, `${this.horarioCollection}/${id}`);
-    await deleteDoc(horarioDoc);
+  updateHorario(horario: ScheduleRequest) {
+    return this.http.put<Response<any>>(`schedule`, horario);
   }
 }

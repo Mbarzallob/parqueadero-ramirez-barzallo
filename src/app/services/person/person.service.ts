@@ -21,4 +21,8 @@ export class PersonService {
   updateProfile(profile: Profile) {
     return this.http.put<Response<any>>('profile', profile);
   }
+
+  updateUserProfile(profile: Profile, userId: number) {
+    return this.http.put<Response<any>>(`profile/${userId}`, profile);
+  }
 }

@@ -47,6 +47,7 @@ export class PerfilComponent implements OnInit {
       this.message.error('Complete todos los campos');
       return;
     }
+    console.log(this.form.getRawValue() as Profile);
     this.personService
       .updateProfile(this.form.getRawValue() as Profile)
       .subscribe(

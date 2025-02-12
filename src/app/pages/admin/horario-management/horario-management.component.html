@@ -1,49 +1,29 @@
-<div class="t-container t-mx-auto t-p-6">
-    <h1 class="t-text-2xl t-font-bold t-mb-4">Gestión de Horarios</h1>
-
-    <!-- Formulario para agregar/editar horarios -->
-    <form [formGroup]="horarioForm" (ngSubmit)="addHorario()" class="t-mb-6">
-        <div class="t-mb-4">
-            <label for="inicio" class="t-block t-text-sm t-font-medium">Fecha y Hora de Inicio:</label>
-            <input id="inicio" formControlName="inicio" type="datetime-local"
-                class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
-        </div>
-        <div class="t-mb-4">
-            <label for="fin" class="t-block t-text-sm t-font-medium">Fecha y Hora de Fin:</label>
-            <input id="fin" formControlName="fin" type="datetime-local"
-                class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
-        </div>
-        <div class="t-flex t-space-x-4">
-            <button type="submit" [disabled]="horarioForm.invalid"
-                class="t-px-4 t-py-2 t-bg-blue-500 t-text-white t-rounded-md t-hover:bg-blue-600">
-                {{ isEditing ? 'Actualizar Horario' : 'Agregar Horario' }}
-            </button>
-            <button type="button" (click)="resetForm()"
-                class="t-px-4 t-py-2 t-bg-gray-300 t-text-black t-rounded-md t-hover:bg-gray-400">
-                Cancelar
-            </button>
-        </div>
-    </form>
-
-    <!-- Lista de horarios -->
-    <h2 class="t-text-xl t-font-semibold t-mb-4">Horarios Existentes</h2>
-    <div *ngIf="horarios.length > 0; else noHorarios">
-        <div *ngFor="let horario of horarios" class="t-p-4 t-mb-2 t-border t-border-gray-300 t-rounded-md">
-            <p><strong>Inicio:</strong> {{ horario.inicio|timestampToDate}}</p>
-            <p><strong>Fin:</strong> {{ horario.fin |timestampToDate}}</p>
-            <div class="t-mt-2 t-flex t-space-x-4">
-                <button (click)="editHorario(horario)"
-                    class="t-px-4 t-py-2 t-bg-yellow-500 t-text-white t-rounded-md t-hover:bg-yellow-600">
-                    Editar
+<nz-table #basicTable [nzData]="horarios" [nzBordered]="true" [nzSize]="'middle'">
+    <thead>
+        <tr>
+            <th nzWidth="25%">Día de la Semana</th>
+            <th nzWidth="25%">Hora Inicio</th>
+            <th nzWidth="25%">Hora Fin</th>
+            <th nzWidth="25%">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let schedule of horarios; let i = index">
+            <td>{{ getDayName(schedule.weekDay) }}</td>
+            <td>
+                <nz-time-picker [(ngModel)]="schedule.startHour" nzFormat="HH:mm:ss"></nz-time-picker>
+            </td>
+            <td>
+                <nz-time-picker [(ngModel)]="schedule.endHour" nzFormat="HH:mm:ss"></nz-time-picker>
+            </td>
+            <td>
+                <button nz-button nzType="link" nzShape="circle" (click)="updateHorario(schedule)">
+                    💾
                 </button>
-                <button (click)="deleteHorario(horario.id)"
-                    class="t-px-4 t-py-2 t-bg-red-500 t-text-white t-rounded-md t-hover:bg-red-600">
-                    Eliminar
+                <button nz-button nzType="link" nzShape="circle" (click)="deleteSchedule(schedule.id)">
+                    🗑️
                 </button>
-            </div>
-        </div>
-    </div>
-    <ng-template #noHorarios>
-        <p class="t-text-gray-500">No hay horarios registrados.</p>
-    </ng-template>
-</div>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>

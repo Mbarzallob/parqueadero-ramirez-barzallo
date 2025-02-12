@@ -16,11 +16,13 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 registerLocaleData(en);
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    NzModalService,
     provideRouter(routes),
 
     provideHttpClient(withInterceptorsFromDi()),
@@ -40,6 +42,10 @@ export const appConfig: ApplicationConfig = {
         messagingSenderId: '703233743032',
         measurementId: 'G-STZVLSWM54',
       })
-    ), provideNzI18n(en_US), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient(),
+    ),
+    provideNzI18n(en_US),
+    importProvidersFrom(FormsModule),
+    provideAnimationsAsync(),
+    provideHttpClient(),
   ],
 };

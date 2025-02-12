@@ -1,131 +1,128 @@
-import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { HorariosService } from '../../../services/horarios/horarios.service';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TimestampToDatePipe } from '../../../pipes/timestamp-to-date.pipe';
-import { timestampToDate } from '../../../utils/firebase-helper';
-
+import { HorariosService } from '../../../services/horarios/horarios.service';
+import { RegularSchedule } from '../../../models/schedule/regularSchedule';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
-    selector: 'app-horario-management',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TimestampToDatePipe,
-    ],
-    templateUrl: './horario-management.component.html',
-    styleUrl: './horario-management.component.scss'
+  selector: 'app-horario-management',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NzTableModule,
+    NzTimePickerModule,
+  ],
+  templateUrl: './horario-management.component.html',
+  styleUrl: './horario-management.component.scss',
 })
-export class HorarioManagementComponent {
-  horarioForm: FormGroup;
-  horarios: any[] = [];
-  isEditing: boolean = false;
-  selectedHorarioId: string | null = null;
+export class HorarioManagementComponent implements OnInit {
+  horarios: RegularSchedule[] = [];
 
   constructor(
-    private fb: FormBuilder,
-    private horarioService: HorariosService
-  ) {
-    this.horarioForm = this.fb.group({
-      inicio: ['', Validators.required],
-      fin: ['', Validators.required],
-    });
+    private scheduleService: HorariosService,
+    private message: NzMessageService
+  ) {}
+
+  ngOnInit(): void {
+    this.getHorarios();
   }
-
-  async ngOnInit(): Promise<void> {
-    try {
-      this.horarios = await this.horarioService.getHorarios();
-    } catch (error) {
-      console.error('Error al cargar horarios:', error);
-    }
-  }
-
-  async addHorario(): Promise<void> {
-    if (this.horarioForm.invalid) return;
-
-    // Convertir los valores del formulario a Date
-    const newHorario = {
-      inicio: new Date(this.horarioForm.value.inicio),
-      fin: new Date(this.horarioForm.value.fin),
-    };
-
-    for (const horario of this.horarios) {
-      const horarioInicio = timestampToDate(horario.inicio);
-      const horarioFin = timestampToDate(horario.fin);
-
-      if (
-        (newHorario.inicio >= horarioInicio &&
-          newHorario.inicio < horarioFin) || // Inicio dentro de otro horario
-        (newHorario.fin > horarioInicio && newHorario.fin <= horarioFin) || // Fin dentro de otro horario
-        (newHorario.inicio <= horarioInicio && newHorario.fin >= horarioFin) // Nuevo horario abarca a otro horario
-      ) {
-        alert('El horario se solapa con un horario existente.');
-        return;
+  getHorarios() {
+    this.scheduleService.getHorarios().subscribe(
+      (response) => {
+        this.horarios = response.data.map((schedule) => ({
+          ...schedule,
+          startHour: this.stringToDate(schedule.startHour),
+          endHour: this.stringToDate(schedule.endHour),
+        }));
+      },
+      (error) => {
+        this.message.error(error);
       }
+    );
+  }
+  getDayName(week_day: number): string {
+    const days = [
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo',
+    ];
+    return days[week_day - 1];
+  }
+  private stringToDate(timeString: string | Date): Date {
+    if (timeString instanceof Date) {
+      return timeString;
     }
-    try {
-      if (this.isEditing && this.selectedHorarioId) {
-        await this.horarioService.updateHorario(
-          this.selectedHorarioId,
-          newHorario
-        );
-        alert('Horario actualizado exitosamente.');
-      } else {
-        await this.horarioService.addHorario(newHorario);
-        alert('Horario agregado exitosamente.');
-      }
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, seconds || 0, 0);
+    return date;
+  }
 
-      this.horarios = await this.horarioService.getHorarios();
-      this.resetForm();
-    } catch (error) {
-      console.error('Error al agregar/actualizar horario:', error);
+  updateHorario(horario: RegularSchedule) {
+    if (horario.startHour > horario.endHour) {
+      this.message.error(
+        'La hora de inicio no puede ser mayor a la hora de fin'
+      );
+      return;
     }
-  }
-
-  editHorario(horario: any): void {
-    this.isEditing = true;
-    this.selectedHorarioId = horario.id;
-
-    // Convertir Timestamp a formato compatible con <input type="datetime-local">
-    const inicio = this.formatDateForInput(timestampToDate(horario.inicio));
-    const fin = this.formatDateForInput(timestampToDate(horario.fin));
-
-    this.horarioForm.patchValue({
-      inicio: inicio,
-      fin: fin,
-    });
-  }
-
-  async deleteHorario(id: string): Promise<void> {
-    if (!confirm('¿Estás seguro de eliminar este horario?')) return;
-
-    try {
-      await this.horarioService.deleteHorario(id);
-      this.horarios = await this.horarioService.getHorarios();
-      alert('Horario eliminado exitosamente.');
-    } catch (error) {
-      console.error('Error al eliminar horario:', error);
+    if (horario.startHour === horario.endHour) {
+      this.message.error(
+        'La hora de inicio no puede ser igual a la hora de fin'
+      );
+      return;
     }
+    if (
+      (horario.startHour && !horario.endHour) ||
+      (!horario.startHour && horario.endHour)
+    ) {
+      this.message.error('Ambas horas deben estar seleccionadas');
+      return;
+    }
+    this.scheduleService
+      .updateHorario({
+        id: horario.id,
+        startTime: this.dateToString(horario.startHour),
+        endTime: this.dateToString(horario.endHour),
+      })
+      .subscribe(
+        (api) => {
+          this.message.success('Horario actualizado con éxito');
+          this.getHorarios();
+        },
+        (error) => {
+          this.message.error(error);
+        }
+      );
   }
 
-  resetForm(): void {
-    this.isEditing = false;
-    this.selectedHorarioId = null;
-    this.horarioForm.reset();
+  private dateToString(date: Date | string): string {
+    if (typeof date === 'string') {
+      return date;
+    }
+    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
   }
-  private formatDateForInput(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  deleteSchedule(id: number) {
+    this.scheduleService
+      .updateHorario({
+        id,
+        startTime: '',
+        endTime: '',
+      })
+      .subscribe(
+        (api) => {
+          this.message.success('Horario eliminado con éxito');
+          this.getHorarios();
+        },
+        (error) => {
+          this.message.error(error);
+        }
+      );
   }
 }
