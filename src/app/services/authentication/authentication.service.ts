@@ -32,6 +32,12 @@ export class AuthenticationService {
   isAdmin() {
     return this.localStorage.getValue(KEYS.ROL) === '1';
   }
+  isEmpleado() {
+    return (
+      this.localStorage.getValue(KEYS.ROL) === '1' ||
+      this.localStorage.getValue(KEYS.ROL) === '2'
+    );
+  }
   isLogged() {
     return this.localStorage.getValue(KEYS.JWT_KEY) !== null;
   }

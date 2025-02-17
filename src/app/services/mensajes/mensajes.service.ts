@@ -1,13 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { addDoc, collection, Firestore } from '@angular/fire/firestore';
+import { Response } from '../../models/generic/response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MensajesService {
-  constructor(private firestore: Firestore) {}
-  async addMensaje(mensaje: any): Promise<void> {
-    const mensajeRef = collection(this.firestore, 'mensajes');
-    await addDoc(mensajeRef, mensaje);
+  constructor(private http: HttpClient) {}
+  addMensaje(mensaje: any) {
+    return this.http.post<Response<any>>('message', mensaje);
   }
 }

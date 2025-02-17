@@ -1,55 +1,69 @@
 <div class="t-container t-mx-auto t-p-6">
-    <h1 class="t-text-2xl t-font-bold t-mb-4">Gestión de Bloques y Parking Spaces</h1>
+    <h1 class="t-text-2xl t-font-bold t-mb-6">Gestión de Bloques y Parking Spaces</h1>
 
     <!-- Formulario de Bloques -->
-    <div class="t-mb-8">
-        <h2 class="t-text-xl t-font-semibold t-mb-2">Añadir Bloque</h2>
+    <div class="t-mb-8 t-bg-white t-p-6 t-shadow-md t-rounded-lg">
+        <h2 class="t-text-xl t-font-semibold t-mb-4">Añadir Bloque</h2>
         <form [formGroup]="blockForm" (ngSubmit)="addBlock()">
-            <div class="t-mb-4">
-                <label for="block-name" class="t-block t-text-sm t-font-medium">Nombre del Bloque:</label>
-                <input id="block-name" formControlName="name" type="text" placeholder="Ejemplo: Bloque A"
-                    class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
+            <div class="md:t-grid md:t-grid-cols-3 md:t-gap-4">
+                <nz-form-item class="t-w-full">
+                    <nz-form-label>Nombre del Bloque:</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input formControlName="name" placeholder="Ejemplo: Bloque A" />
+                    </nz-form-control>
+                </nz-form-item>
+                <div class="t-flex t-items-center">
+                    <button nz-button type="submit" [disabled]="blockForm.invalid" nzType="primary"
+                        [nzLoading]="loading">
+                        Añadir Bloque
+                    </button>
+                </div>
             </div>
-            <button nz-button type="submit" [disabled]="blockForm.invalid" nzType="primary" [nzLoading]="loading">
-                Añadir Bloque
-            </button>
         </form>
     </div>
 
     <!-- Lista de Bloques -->
-    <div class="t-mb-8">
-        <h2 class="t-text-xl t-font-semibold t-mb-2">Bloques Existentes</h2>
-        <div *ngIf="blocks.length > 0; else noBlocks">
-            <div *ngFor="let block of blocks"
-                class="t-p-4 t-mb-2 t-border t-border-gray-300 t-rounded-md t-cursor-pointer t-hover:bg-gray-100"
-                (click)="selectBlock(block.id)" [class.t-bg-blue-100]="selectedBlockId === block.id">
-                <p class="t-font-bold t-text-gray-800">Nombre: {{ block.name }}</p>
-                <p class="t-text-sm t-text-gray-600">ID: {{ block.id }}</p>
-            </div>
-        </div>
-        <ng-template #noBlocks>
-            <p class="t-text-gray-500">No hay bloques registrados.</p>
-        </ng-template>
+    <div class="t-mb-8 t-bg-white t-p-6 t-shadow-md t-rounded-lg">
+        <h2 class="t-text-xl t-font-semibold t-mb-4">Bloques Existentes</h2>
+        <nz-table #basicTable [nzData]="blocks" [nzBordered]="true" [nzSize]="'middle'">
+            <thead>
+                <tr>
+                    <th nzWidth="70%">Nombre</th>
+                    <th nzWidth="30%">ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let block of blocks" [class.t-bg-blue-100]="selectedBlockId === block.id"
+                    (click)="selectBlock(block.id)">
+                    <td class="t-font-bold">{{ block.name }}</td>
+                    <td>{{ block.id }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
     </div>
 
     <!-- Formulario de Parking Spaces -->
-    <div *ngIf="selectedBlockId" class="t-mb-8">
-        <h2 class="t-text-xl t-font-semibold t-mb-2">Añadir Parking Space al Bloque Seleccionado</h2>
+    <div *ngIf="selectedBlockId" class="t-mb-8 t-bg-white t-p-6 t-shadow-md t-rounded-lg">
+        <h2 class="t-text-xl t-font-semibold t-mb-4">Añadir Parking Space al Bloque Seleccionado</h2>
         <form [formGroup]="parkingSpaceForm">
-            <div class="t-mb-4">
-                <label for="rate" class="t-block t-text-sm t-font-medium">Tarifa:</label>
-                <select id="rate" formControlName="rateId"
-                    class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md">
-                    <option *ngFor="let rate of rates" [value]="rate.id">
-                        {{ rate.id }} - Por Hora: {{ rate.priceHour }} | Por Día: {{ rate.priceDay }}
-                    </option>
-                </select>
+            <div class="md:t-grid md:t-grid-cols-3 md:t-gap-4 md:t-items-center">
+                <nz-form-item class="t-w-full">
+                    <nz-form-label>Tarifa:</nz-form-label>
+                    <nz-form-control>
+                        <nz-select formControlName="rateId" nzPlaceHolder="Seleccione una tarifa">
+                            <nz-option *ngFor="let rate of rates" [nzValue]="rate.id"
+                                [nzLabel]="'ID: ' + rate.id + ' - Por Hora: ' + rate.priceHour + ' | Por Día: ' + rate.priceDay">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <div class="t-flex t-items-center">
+                    <button nz-button nzType="primary" [disabled]="parkingSpaceForm.invalid"
+                        (click)="addParkingSpace()">
+                        Añadir Parking Space
+                    </button>
+                </div>
             </div>
-
-            <button [disabled]="parkingSpaceForm.invalid" (click)="addParkingSpace()"
-                class="t-px-4 t-py-2 t-bg-green-500 t-text-white t-rounded-md t-hover:bg-green-600">
-                Añadir Parking Space
-            </button>
         </form>
     </div>
 </div>

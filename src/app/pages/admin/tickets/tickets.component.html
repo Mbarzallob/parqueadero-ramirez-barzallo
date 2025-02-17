@@ -1,0 +1,69 @@
+<div class="t-container t-mx-auto t-p-6">
+    <h1 class="t-text-3xl t-font-bold t-mb-6">Gestión de Tickets</h1>
+
+    <nz-spin [nzSpinning]="isLoading" nzTip="Cargando datos...">
+        <div *ngIf="!isLoading">
+
+            <div class="t-grid t-grid-cols-1 md:t-grid-cols-3 t-gap-6 t-mb-6">
+                <div class="t-flex t-flex-col">
+                    <label class="t-font-bold t-mb-2">Tipo de vehículo:</label>
+                    <nz-select class="t-w-full" [(ngModel)]="filter.vehicleType" (ngModelChange)="getParkingSpaces()"
+                        nzPlaceHolder="Seleccione tipo">
+                        <nz-option *ngFor="let type of vehicleTypes" [nzValue]="type.id"
+                            [nzLabel]="type.type"></nz-option>
+                    </nz-select>
+                </div>
+                <div class="t-flex t-flex-col">
+                    <label class="t-font-bold t-mb-2">Fecha inicio:</label>
+                    <nz-date-picker class="t-w-full" [(ngModel)]="filter.startDate" nzDisabled="true"></nz-date-picker>
+                </div>
+                <div class="t-flex t-flex-col">
+                    <label class="t-font-bold t-mb-2">Vehículo:</label>
+                    <div class="t-flex t-items-center t-gap-4">
+                        <button nz-button nzType="primary" (click)="seleccionarUsuario()">Seleccionar Vehículo</button>
+                        <p *ngIf="selectedVehicle" class="t-text-sm t-text-gray-700">
+                            {{ selectedVehicle.plate }} - {{ selectedVehicle.model }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="t-text-2xl t-font-semibold t-mt-6">Parqueaderos Disponibles</h2>
+
+            <div class="t-grid t-grid-cols-1 md:t-grid-cols-3 t-gap-6 t-mb-6">
+                <div *ngFor="let space of parkingSpaces"
+                    class="t-p-4 t-rounded-lg t-shadow-lg t-flex t-flex-col t-justify-between t-bg-white t-border t-border-gray-300">
+                    <h2 class="t-text-lg t-font-bold t-mb-2">Espacio {{ space.id }}</h2>
+                    <p class="t-text-sm">💰 <span class="t-font-semibold">{{ space.parkingSpaceType.priceHour }}</span>
+                        por hora</p>
+                    <button nz-button nzType="primary" class="t-mt-4" (click)="addTicket(space.id)">Registrar
+                        Ticket</button>
+                </div>
+            </div>
+
+            <h2 class="t-text-2xl t-font-semibold t-mt-6">Tickets Activos</h2>
+            <nz-table #ticketTable [nzData]="tickets" [nzBordered]="true" [nzSize]="'middle'">
+                <thead>
+                    <tr>
+                        <th nzWidth="30%">Vehículo</th>
+                        <th nzWidth="30%">Fecha Inicio</th>
+                        <th nzWidth="30%">Parqueadero</th>
+                        <th nzWidth="10%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let ticket of tickets">
+                        <td>{{ ticket.vehicle.plate }} - {{ ticket.vehicle.model }}</td>
+                        <td>{{ formatDate(ticket.startDate) }}</td>
+                        <td>{{ ticket.parkingSpace.id }}</td>
+                        <td>
+                            <button nz-button nzType="link" nzShape="circle" (click)="endTicket(ticket)">
+                                🛑 Finalizar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-spin>
+</div>

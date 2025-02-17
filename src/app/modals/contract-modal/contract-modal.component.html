@@ -1,47 +1,35 @@
-<div class="t-flex t-flex-col t-space-y-6 t-p-10">
+<div class="t-flex t-flex-col t-space-y-8 t-p-10">
     <h1 class="t-text-2xl t-font-bold t-text-gray-800">Contratar espacio</h1>
 
     <nz-alert *ngIf="errorMessage" [nzType]="'error'" [nzMessage]="errorMessage" [nzShowIcon]="true"></nz-alert>
 
+    <!-- Paso 1 -->
     <div *ngIf="step === 0">
-        <p class="t-text-gray-600">
+        <p class="t-text-gray-600 t-mb-4">
             <strong>Fecha seleccionada:</strong> {{ startDate | date: 'fullDate' }}
         </p>
 
-        <h3 class="t-text-lg t-font-medium t-text-gray-700 t-mb-2">Selecciona una opción:</h3>
-        <div class="t-grid t-grid-cols-4 t-gap-2">
+        <h3 class="t-text-lg t-font-medium t-text-gray-700 t-mb-4">Selecciona una opción:</h3>
+        <div class="t-flex t-gap-3">
             <button *ngFor="let option of ['dia', 'semana', 'mes']" nz-button nzType="default"
                 (click)="selectOption(option)" [nzType]="option === selectedOption ? 'primary' : 'default'">
                 {{ option | titlecase }}
             </button>
         </div>
 
-        <!-- Rango por día -->
-        <div *ngIf="selectedOption === 'dia'" class="t-space-y-4">
-            <h3 class="t-text-lg t-font-medium t-text-gray-700">Selecciona el rango de días:</h3>
-            <div class="t-grid t-grid-cols-2 t-gap-4">
-                <nz-date-picker [(ngModel)]="startDate" (ngModelChange)="updateStartDate($event)"></nz-date-picker>
-                <nz-date-picker [(ngModel)]="endDate" (ngModelChange)="updateEndDate($event)"></nz-date-picker>
+        <!-- Rango de Fechas -->
+        <div *ngIf="selectedOption" class="t-space-y-6">
+            <h3 class="t-text-lg t-font-medium t-text-gray-700">Selecciona el rango de {{ selectedOption }}:</h3>
+            <div class="t-grid md:t-grid-cols-2 t-gap-6">
+                <nz-date-picker [(ngModel)]="startDate" class="t-w-full t-rounded-md t-px-3 t-py-2"
+                    (ngModelChange)="updateStartDate($event)"></nz-date-picker>
+                <nz-date-picker [(ngModel)]="endDate" class="t-w-full t-rounded-md t-px-3 t-py-2"
+                    (ngModelChange)="updateEndDate($event)"></nz-date-picker>
             </div>
         </div>
 
-        <div *ngIf="selectedOption === 'semana'" class="t-space-y-4">
-            <h3 class="t-text-lg t-font-medium t-text-gray-700">Selecciona el rango de semanas:</h3>
-            <div class="t-grid t-grid-cols-2 t-gap-4">
-                <nz-date-picker [(ngModel)]="startDate" (ngModelChange)="updateStartDate($event)"></nz-date-picker>
-                <nz-date-picker [(ngModel)]="endDate" (ngModelChange)="updateEndDate($event)"></nz-date-picker>
-            </div>
-        </div>
-        <div *ngIf="selectedOption === 'mes'" class="t-space-y-4">
-            <h3 class="t-text-lg t-font-medium t-text-gray-700">Selecciona el rango de meses:</h3>
-            <div class="t-grid t-grid-cols-2 t-gap-4">
-                <nz-date-picker [(ngModel)]="startDate" (ngModelChange)="updateStartDate($event)"></nz-date-picker>
-                <nz-date-picker [(ngModel)]="endDate" (ngModelChange)="updateEndDate($event)"></nz-date-picker>
-            </div>
-        </div>
-
-        <!-- Botones de acción -->
-        <div class="t-flex t-justify-end t-mt-6 t-space-x-3">
+        <!-- Botones -->
+        <div class="t-flex t-justify-end t-mt-8 t-space-x-4">
             <button nz-button nzType="default" (click)="cancel()">Cancelar</button>
             <button nz-button nzType="primary"
                 [disabled]="!selectedOption || (selectedOption === 'hora' && (!startTime || !endTime))"
@@ -49,25 +37,26 @@
         </div>
     </div>
 
+    <!-- Paso 2 -->
     <div *ngIf="step === 1">
-        <h2 *ngIf="!selectedVehicle" class="t-text-lg t-font-medium t-text-gray-700">Selecciona el usuario que
-            contratará</h2>
+        <h2 class="t-text-lg t-font-medium t-text-gray-700">Vehículo seleccionado:</h2>
 
         <div *ngIf="selectedVehicle" class="t-mt-4">
-            <h3 class="t-text-lg t-font-medium t-text-gray-700">Vehiculo seleccionado:</h3>
             <p class="t-text-gray-600">{{ selectedVehicle.model }} {{ selectedVehicle.plate }}</p>
-
         </div>
-        <button nzType="primary" nz-button (click)="seleccionarUsuario()">Buscar Vehiculo</button>
+
+        <button nzType="primary" nz-button class="t-mt-4 t-py-2 t-px-4" (click)="seleccionarUsuario()">
+            Buscar Vehículo
+        </button>
 
         <!-- Precio -->
-        <div class="t-mt-4">
+        <div class="t-mt-6">
             <h3 class="t-text-lg t-font-medium t-text-gray-700">Precio:</h3>
             <p class="t-text-gray-600">{{ price | currency }}</p>
         </div>
 
-        <!-- Botones de acción -->
-        <div class="t-flex t-justify-end t-mt-6 t-space-x-3">
+        <!-- Botones -->
+        <div class="t-flex t-justify-end t-mt-8 t-space-x-4">
             <button nz-button nzType="default" (click)="previousStep()">Anterior</button>
             <button nz-button nzType="primary" [disabled]="!selectedVehicle" (click)="guardar()">Guardar</button>
         </div>

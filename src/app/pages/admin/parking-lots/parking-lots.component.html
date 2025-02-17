@@ -1,28 +1,73 @@
-<div class="t-container t-mx-auto t-p-4">
-    <h1 class="t-text-3xl t-font-bold t-mb-4">Gestión de Parqueaderos</h1>
+<div class="t-container t-mx-auto t-p-6">
+    <h1 class="t-text-3xl t-font-bold t-mb-6">Gestión de Parqueaderos</h1>
 
-    <div *ngIf="isLoading" class="t-text-center t-my-4">
-        <p class="t-text-lg">Cargando datos...</p>
-    </div>
-    <div *ngIf="!isLoading">
+    <nz-spin [nzSpinning]="isLoading">
+        <div class="t-bg-white t-p-6 t-shadow-md t-rounded-lg t-mb-6">
+            <!-- Primera Fila de Filtros -->
+            <div class="md:t-grid md:t-grid-cols-2 lg:t-grid-cols-3 t-gap-6 t-mb-6">
+                <nz-form-item>
+                    <nz-form-label>Bloque</nz-form-label>
+                    <nz-form-control>
+                        <nz-select class="t-w-full" [(ngModel)]="selectedBlock" (ngModelChange)="onBlockChange()"
+                            nzPlaceHolder="Seleccione un bloque">
+                            <nz-option *ngFor="let cat of blocksOriginal" [nzValue]="cat"
+                                [nzLabel]="cat.id + ': ' + cat.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
 
-        <select
-            class="t-bg-gray-50 t-border t-border-gray-300 t-text-gray-900 t-text-sm t-rounded-lg t-focus:ring-blue-500 t-focus:border-blue-500 t-block t-p-2.5 t-dark:bg-gray-700 t-dark:border-gray-600 t-dark:placeholder-gray-400 t-dark:text-white t-dark:focus:ring-blue-500 t-dark:focus:border-blue-500 t-mb-6"
-            (change)="onBlockChange($event)" [(ngModel)]="selectedBlock">
-            <option *ngFor="let cat of blocksOriginal" [ngValue]="cat">{{cat.id}}: {{ cat.name }}</option>
-        </select>
+                <nz-form-item>
+                    <nz-form-label>Tipo de vehículo</nz-form-label>
+                    <nz-form-control>
+                        <nz-select class="t-w-full" [(ngModel)]="filter.vehicleType" (ngModelChange)="onBlockChange()"
+                            nzPlaceHolder="Seleccione tipo">
+                            <nz-option *ngFor="let type of vehicleTypes" [nzValue]="type.id"
+                                [nzLabel]="type.type"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
 
-        <div class="t-grid t-grid-cols-1 t-md:grid-cols-3 t-lg:grid-cols-4 t-gap-4">
-            <div *ngFor="let space of parkingSpaces" routerLink="/admin/parking-lot"
-                [queryParams]="{parkingId:space.id, blockId:selectedBlock!.id}"
-                class="t-p-4 t-rounded t-shadow  t-flex t-flex-col t-justify-between">
-                <h2 class="t-text-lg t-font-bold">Espacio {{selectedBlock?.name}}{{ space.id }}</h2>
-                <p>Precio por hora: {{space.parkingSpaceType.priceHour}}</p>
-                <p>Precio por mes: {{space.parkingSpaceType.priceMonth}}</p>
-                <p>Precio por semana: {{space.parkingSpaceType.priceWeek}}</p>
-                <p>Precio por dia: {{space.parkingSpaceType.priceDay}}</p>
+            <!-- Segunda Fila de Filtros -->
+            <div class="md:t-grid md:t-grid-cols-2 lg:t-grid-cols-3 t-gap-6 t-mb-6">
+                <nz-form-item>
+                    <nz-form-label>Fecha inicio</nz-form-label>
+                    <nz-form-control>
+                        <nz-date-picker class="t-w-full" [(ngModel)]="filter.startDate"
+                            (ngModelChange)="onBlockChange()"></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
 
+                <nz-form-item>
+                    <nz-form-label>Fecha fin</nz-form-label>
+                    <nz-form-control>
+                        <nz-date-picker class="t-w-full" [(ngModel)]="filter.endDate"
+                            (ngModelChange)="onBlockChange()"></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+
+            <!-- Botón para limpiar los filtros -->
+            <div class="t-text-right">
+                <button nz-button nzType="default" (click)="clearFilters()">Limpiar Filtros</button>
             </div>
         </div>
-    </div>
+
+        <!-- Espacios de Parqueo -->
+        <div class="t-grid md:t-grid-cols-2 lg:t-grid-cols-3 xl:t-grid-cols-4 t-gap-6">
+            <div *ngFor="let space of parkingSpaces" routerLink="/admin/parking-lot"
+                [queryParams]="{parkingId:space.id, blockId:selectedBlock!.id, vehicleType:space.parkingSpaceType.vehicleType.id}"
+                class="t-p-6 t-rounded-lg t-shadow-md t-bg-white t-border t-border-gray-200 t-flex t-flex-col t-justify-between">
+                <h2 class="t-text-lg t-font-bold t-mb-4">Espacio {{selectedBlock?.name}}{{ space.id }}</h2>
+                <p class="t-text-sm">💰 <span class="t-font-semibold">{{space.parkingSpaceType.priceHour}}</span> por
+                    hora</p>
+                <p class="t-text-sm">📅 <span class="t-font-semibold">{{space.parkingSpaceType.priceDay}}</span> por día
+                </p>
+                <p class="t-text-sm">🗓️ <span class="t-font-semibold">{{space.parkingSpaceType.priceWeek}}</span> por
+                    semana</p>
+                <p class="t-text-sm">📆 <span class="t-font-semibold">{{space.parkingSpaceType.priceMonth}}</span> por
+                    mes</p>
+            </div>
+        </div>
+    </nz-spin>
 </div>

@@ -1,0 +1,114 @@
+<div class="t-container t-mx-auto t-p-6 t-bg-white t-shadow-md t-rounded-lg">
+    <h2 class="t-text-xl t-font-bold t-mb-4">Generar Reporte</h2>
+
+    <nz-form-item>
+        <nz-form-label nzFor="reportType">Tipo de Reporte</nz-form-label>
+        <nz-form-control>
+            <nz-select [(ngModel)]="reportType" (ngModelChange)="changeReportType($event)"
+                nzPlaceHolder="Seleccione el tipo de reporte" class="t-w-full">
+                <nz-option nzValue="contract" nzLabel="Contratos"></nz-option>
+                <nz-option nzValue="ticket" nzLabel="Tickets"></nz-option>
+            </nz-select>
+
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form [formGroup]="reportForm" nzLayout="vertical">
+        <div class="t-grid t-grid-cols-1 md:t-grid-cols-2 t-gap-4">
+            <!-- Tipo de Reporte -->
+
+
+            <!-- Estado Activo -->
+            <nz-form-item>
+                <nz-form-label nzFor="active">Estado</nz-form-label>
+                <nz-form-control>
+                    <nz-select formControlName="active" nzPlaceHolder="Seleccione un estado">
+                        <nz-option [nzValue]="true" nzLabel="Activo"></nz-option>
+                        <nz-option [nzValue]="false" nzLabel="Inactivo"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Espacio de Parqueo -->
+            <nz-form-item>
+                <nz-form-label nzFor="parkingSpace">Espacio de Parqueo</nz-form-label>
+                <nz-form-control>
+                    <nz-select formControlName="parkingSpace" nzPlaceHolder="Seleccione un espacio" class="t-w-full">
+                        <nz-option *ngFor="let space of parkingSpaces" [nzValue]="space.id"
+                            [nzLabel]="space.id+space.parkingSpaceType.vehicleType.type"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Vehículo -->
+            <nz-form-item>
+                <nz-form-label nzFor="vehicle">Vehículo</nz-form-label>
+                <nz-form-control>
+                    <button nz-button nzType="primary" (click)="seleccionarUsuario()">Seleccionar Vehículo</button>
+                    <p *ngIf="selectedVehicle" class="t-mt-2 t-text-sm t-text-gray-600">
+                        Seleccionado: {{ selectedVehicle.model }} ({{ selectedVehicle.plate }})
+                    </p>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Fecha de Inicio -->
+            <nz-form-item>
+                <nz-form-label nzFor="startDate">Fecha de Inicio</nz-form-label>
+                <nz-form-control>
+                    <nz-date-picker formControlName="startDate" nzPlaceHolder="Seleccione fecha"></nz-date-picker>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Fecha de Fin -->
+            <nz-form-item>
+                <nz-form-label nzFor="finishDate">Fecha de Fin</nz-form-label>
+                <nz-form-control>
+                    <nz-date-picker formControlName="finishDate" nzPlaceHolder="Seleccione fecha"></nz-date-picker>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Tipo de Contrato (Solo para contratos) -->
+            <nz-form-item *ngIf="reportType === 'contract'">
+                <nz-form-label nzFor="contractType">Tipo de Contrato</nz-form-label>
+                <nz-form-control>
+                    <nz-select formControlName="contractType" nzPlaceHolder="Seleccione un tipo de contrato">
+                        <nz-option *ngFor="let type of contractTypes" [nzValue]="type.id"
+                            [nzLabel]="type.name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+
+        <!-- Botón Generar Reporte -->
+        <div class="t-mt-6 t-text-center">
+            <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="generateReport()">Generar
+                Reporte</button>
+        </div>
+    </nz-form>
+
+    <!-- Tabla de Resultados -->
+    <div class="t-mt-6">
+        <nz-table #basicTable [nzBordered]="true" [nzData]="reportData" [nzSize]="'middle'" [nzLoading]="isLoading">
+            <thead>
+                <tr>
+                    <th nzWidth="25%">ID</th>
+                    <th nzWidth="25%">Estado</th>
+                    <th nzWidth="25%">Fecha Inicio</th>
+                    <th nzWidth="25%">Fecha Fin</th>
+                    <th *ngIf="reportType === 'contract'" nzWidth="25%">Tipo de Contrato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of reportData">
+                    <td>{{ item.id }}</td>
+                    <td>
+                        <nz-tag [nzColor]="item.active ? 'green' : 'red'">{{ item.active ? 'Activo' : 'Inactivo'
+                            }}</nz-tag>
+                    </td>
+                    <td>{{ item.startDate }}</td>
+                    <td>{{ item.finishDate }}</td>
+                    <td *ngIf="reportType === 'contract'">{{ item.contractType.name }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>

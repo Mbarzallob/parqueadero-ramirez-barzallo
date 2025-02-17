@@ -33,11 +33,11 @@
                 <h3 class="t-text-2xl t-font-semibold t-text-gray-800 t-mb-4">Envíanos un mensaje</h3>
                 <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="t-space-y-4">
                     <div>
-                        <label for="nombre" class="t-block t-text-gray-700 t-font-medium">Nombre</label>
-                        <input type="text" id="nombre" formControlName="nombre"
+                        <label for="name" class="t-block t-text-gray-700 t-font-medium">Nombre</label>
+                        <input type="text" id="name" formControlName="name"
                             class="t-w-full t-mt-2 t-p-3 t-border t-rounded-md t-focus:outline-none t-focus:ring t-focus:ring-blue-300"
                             placeholder="Ingresa tu nombre" />
-                        <div *ngIf="contactForm.get('nombre')?.invalid && contactForm.get('nombre')?.touched"
+                        <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched"
                             class="t-text-red-500 t-text-sm">
                             El nombre es requerido.
                         </div>
@@ -45,22 +45,22 @@
 
                     <div>
                         <label for="correo" class="t-block t-text-gray-700 t-font-medium">Correo Electrónico</label>
-                        <input type="email" id="correo" formControlName="correo"
+                        <input type="email" id="email" formControlName="email"
                             class="t-w-full t-mt-2 t-p-3 t-border t-rounded-md t-focus:outline-none t-focus:ring t-focus:ring-blue-300"
                             placeholder="Ingresa tu correo electrónico" />
-                        <div *ngIf="contactForm.get('correo')?.invalid && contactForm.get('correo')?.touched"
+                        <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched"
                             class="t-text-red-500 t-text-sm">
-                            <span *ngIf="contactForm.get('correo')?.errors?.['required']">El correo es requerido.</span>
-                            <span *ngIf="contactForm.get('correo')?.errors?.['email']">Ingresa un correo válido.</span>
+                            <span *ngIf="contactForm.get('email')?.errors?.['required']">El correo es requerido.</span>
+                            <span *ngIf="contactForm.get('email')?.errors?.['email']">Ingresa un correo válido.</span>
                         </div>
                     </div>
 
                     <div>
-                        <label for="mensaje" class="t-block t-text-gray-700 t-font-medium">Mensaje</label>
-                        <textarea id="mensaje" formControlName="mensaje" rows="5"
+                        <label for="message" class="t-block t-text-gray-700 t-font-medium">Mensaje</label>
+                        <textarea id="message" formControlName="message" rows="5"
                             class="t-w-full t-mt-2 t-p-3 t-border t-rounded-md t-focus:outline-none t-focus:ring t-focus:ring-blue-300"
                             placeholder="Escribe tu mensaje"></textarea>
-                        <div *ngIf="contactForm.get('mensaje')?.invalid && contactForm.get('mensaje')?.touched"
+                        <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"
                             class="t-text-red-500 t-text-sm">
                             El mensaje es requerido.
                         </div>

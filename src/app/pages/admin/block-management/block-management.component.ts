@@ -13,10 +13,24 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { RatesService } from '../../../services/rates/rates.service';
-
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
 @Component({
   selector: 'app-block-management',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, NzButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NzButtonModule,
+    NzInputModule,
+    NzTableModule,
+    NzSelectModule,
+    NzSpinModule,
+    NzFormModule,
+  ],
   templateUrl: './block-management.component.html',
   styleUrl: './block-management.component.scss',
 })

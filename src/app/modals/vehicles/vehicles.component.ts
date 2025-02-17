@@ -8,6 +8,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { EditVehicleComponent } from '../edit-vehicle/edit-vehicle.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-vehicles',
@@ -23,7 +24,8 @@ export class VehiclesComponent implements OnInit {
     private personService: PersonService,
     private message: NzMessageService,
     private nzModalService: NzModalService,
-    private modal: NzModalRef
+    private modal: NzModalRef,
+    private route: ActivatedRoute
   ) {}
   ngOnInit(): void {
     this.canSelect = this.data.canSelect;
@@ -31,10 +33,19 @@ export class VehiclesComponent implements OnInit {
   }
 
   getVehicles() {
+    const validType = this.route.snapshot.queryParams['vehicleType'];
+    console.log(validType);
     this.personService.getVehicles(this.data.user.id).subscribe(
       (response) => {
-        this.vehicles = response.data;
-        console.log(this.vehicles);
+        if (validType) {
+          this.vehicles = response.data.filter(
+            (vehicle) => vehicle.vehicleType.id === Number(validType)
+          );
+        } else {
+          this.vehicles = response.data;
+        }
+        console.log('------------');
+        console.log(response.data);
       },
       (error) => {
         this.message.error(error);
@@ -52,9 +63,7 @@ export class VehiclesComponent implements OnInit {
         },
       })
       .afterClose.subscribe((result) => {
-        if (result) {
-          this.getVehicles();
-        }
+        this.getVehicles();
       });
   }
   deleteVehicle(vehicle: Vehicle) {}

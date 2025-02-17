@@ -45,6 +45,10 @@ export class AuthInterceptorService implements HttpInterceptor {
           if (event.body) {
             const body = event.body;
             if (!body.success) {
+              if ((body.message as String).includes('expirado')) {
+                this.localStorage.clear();
+                this.router.navigate(['/']);
+              }
               throw new Error(body.message);
             }
           }

@@ -42,10 +42,26 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'admin/tickets',
+        loadComponent: () =>
+          import('./pages/admin/tickets/tickets.component').then(
+            (m) => m.TicketsComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
         path: 'admin/parking-lots',
         loadComponent: () =>
           import('./pages/admin/parking-lots/parking-lots.component').then(
             (m) => m.ParkingLotsComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'admin/reports',
+        loadComponent: () =>
+          import('./pages/admin/report/report.component').then(
+            (m) => m.ReportComponent
           ),
         canActivate: [authGuard],
       },

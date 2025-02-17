@@ -1,50 +1,106 @@
-<div class="t-p-6">
-    <h2 class="t-text-2xl t-font-bold t-text-gray-800 t-mb-4">Gestión de Tarifas</h2>
+<div class="t-container t-mx-auto t-p-6">
+    <h2 class="t-text-2xl t-font-bold t-text-gray-800 t-mb-6">Gestión de Tarifas</h2>
 
-    <div *ngFor="let rate of rates; let i = index" class="t-mb-6 t-border t-p-4 t-rounded-md t-shadow-sm">
-        <h3 class="t-text-lg t-font-medium t-text-gray-700 t-mb-4">Tarifa {{ rate.id }}</h3>
+    <!-- Formulario para agregar una nueva tarifa -->
+    <div class="t-mb-8 t-bg-white t-p-6 t-shadow-md t-rounded-lg">
+        <h3 class="t-text-xl t-font-semibold t-mb-4">Añadir Nueva Tarifa</h3>
+        <form #rateForm="ngForm">
+            <div class="md:t-grid md:t-grid-cols-2 md:t-gap-4 t-mb-4">
+                <nz-form-item>
+                    <nz-form-label>Precio por Hora</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="newRate.hourPrice" name="priceHour" type="number" required />
+                    </nz-form-control>
+                </nz-form-item>
 
-        <form>
-            <div class="t-grid t-grid-cols-2 t-gap-4 t-mb-4">
-                <div>
-                    <label for="precioPorHora-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio
-                        por
-                        Hora</label>
-                    <input id="precioPorHora-{{ i }}" [(ngModel)]="rate.priceHour" name="precioPorHora-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
-                </div>
-                <div>
-                    <label for="precioPorDia-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio por
-                        Día</label>
-                    <input id="precioPorDia-{{ i }}" [(ngModel)]="rate.priceDay" name="precioPorDia-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
-                </div>
-                <div>
-                    <label for="precioPorSemana-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio
-                        por
-                        Semana</label>
-                    <input id="precioPorSemana-{{ i }}" [(ngModel)]="rate.priceWeek" name="precioPorSemana-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
-                </div>
-                <div>
-                    <label for="precioPorMes-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio por
-                        Mes</label>
-                    <input id="precioPorMes-{{ i }}" [(ngModel)]="rate.priceMonth" name="precioPorMes-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
-                </div>
-                <div>
-                    <label>Tipo de tarifa</label>
-                    <nz-select [(ngModel)]="rate.vehicleTypeId" name="tipoTarifa-{{ i }}" class="t-w-full">
-                        <nz-option *ngFor="let type of vehicleTypes" [nzLabel]="type.type" [nzValue]="type.id">
-                        </nz-option>
-                    </nz-select>
-                </div>
+                <nz-form-item>
+                    <nz-form-label>Precio por Día</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="newRate.dayPrice" name="priceDay" type="number" required />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Precio por Semana</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="newRate.weekPrice" name="priceWeek" type="number" required />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Precio por Mes</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="newRate.monthPrice" name="priceMonth" type="number" required />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Tipo de Vehículo</nz-form-label>
+                    <nz-form-control>
+                        <nz-select [(ngModel)]="newRate.vehicleType" name="vehicleType" required>
+                            <nz-option *ngFor="let type of vehicleTypes" [nzValue]="type.id" [nzLabel]="type.type">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
             </div>
 
-            <button type="button" (click)="updateRate(rate)"
-                class="t-px-4 t-py-2 t-bg-blue-500 t-text-white t-rounded-md t-hover:bg-blue-600">
-                Guardar Cambios
+            <button nz-button nzType="primary" [disabled]="rateForm.invalid" (click)="addRate(newRate)">
+                Agregar Tarifa
             </button>
+        </form>
+    </div>
+
+    <h2 class="t-text-xl t-font-bold t-text-gray-800 t-mb-6">Tarifas Existentes</h2>
+    <!-- Lista de Tarifas Existentes -->
+    <div *ngFor="let rate of rates; let i = index" class="t-mb-6 t-bg-white t-p-6 t-shadow-md t-rounded-lg">
+        <h3 class="t-text-lg t-font-semibold t-text-gray-700 t-mb-4">Tarifa {{ rate.id }}</h3>
+
+        <form>
+            <div class="md:t-grid md:t-grid-cols-2 md:t-gap-4 t-mb-4">
+                <nz-form-item>
+                    <nz-form-label>Precio por Hora</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="rate.priceHour" name="precioPorHora-{{ i }}" type="number" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Precio por Día</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="rate.priceDay" name="precioPorDia-{{ i }}" type="number" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Precio por Semana</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="rate.priceWeek" name="precioPorSemana-{{ i }}" type="number" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Precio por Mes</nz-form-label>
+                    <nz-form-control>
+                        <input nz-input [(ngModel)]="rate.priceMonth" name="precioPorMes-{{ i }}" type="number" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Tipo de Vehículo</nz-form-label>
+                    <nz-form-control>
+                        <nz-select [(ngModel)]="rate.vehicleTypeId" name="tipoTarifa-{{ i }}">
+                            <nz-option *ngFor="let type of vehicleTypes" [nzValue]="type.id" [nzLabel]="type.type">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+
+            <div class="t-flex t-gap-4">
+                <button nz-button nzType="primary" (click)="updateRate(rate)">Guardar Cambios</button>
+                <button nz-button nzDanger (click)="deleteRate(rate.id)">Eliminar Tarifa</button>
+            </div>
         </form>
     </div>
 </div>

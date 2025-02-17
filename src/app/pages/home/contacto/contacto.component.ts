@@ -8,32 +8,37 @@ import {
 } from '@angular/forms';
 import { MensajesService } from '../../../services/mensajes/mensajes.service';
 import { CommonModule } from '@angular/common';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
-    selector: 'app-contacto',
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
-    templateUrl: './contacto.component.html',
-    styleUrl: './contacto.component.scss'
+  selector: 'app-contacto',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: './contacto.component.html',
+  styleUrl: './contacto.component.scss',
 })
 export class ContactoComponent {
   constructor(
     private fb: FormBuilder,
-    private messageService: MensajesService
+    private messageService: MensajesService,
+    private message: NzMessageService
   ) {}
 
   contactForm: FormGroup = this.fb.group({
-    nombre: ['', [Validators.required]],
-    correo: ['', [Validators.required, Validators.email]],
-    mensaje: ['', [Validators.required]],
+    name: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    message: ['', [Validators.required]],
   });
 
-  async onSubmit() {
+  onSubmit() {
     if (this.contactForm.valid) {
-      await this.messageService.addMensaje(this.contactForm.value);
-      alert('Mensaje enviado correctamente');
-      this.contactForm.reset();
+      this.messageService
+        .addMensaje(this.contactForm.value)
+        .subscribe((api) => {
+          this.message.success('Mensaje enviado correctamente');
+          this.contactForm.reset();
+        });
     } else {
-      console.log('Form not valid');
+      this.message.error('Por favor, rellene todos los campos');
     }
   }
 }

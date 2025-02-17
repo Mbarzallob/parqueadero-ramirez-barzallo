@@ -23,3 +23,19 @@ export interface ContractType {
   id: string;
   name: string;
 }
+
+export interface Ticket {
+  id: number;
+  startDate: Date;
+  finishDate: Date;
+  parkingSpace: ParkingSpace;
+  vehicle: Vehicle;
+  active: boolean;
+}
+
+export interface TicketRequest {
+  startDate: Date | string;
+  endDate: Date | null;
+  parkingId: number;
+  vehicleId: number;
+}

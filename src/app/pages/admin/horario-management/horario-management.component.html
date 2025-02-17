@@ -1,29 +1,89 @@
-<nz-table #basicTable [nzData]="horarios" [nzBordered]="true" [nzSize]="'middle'">
-    <thead>
-        <tr>
-            <th nzWidth="25%">Día de la Semana</th>
-            <th nzWidth="25%">Hora Inicio</th>
-            <th nzWidth="25%">Hora Fin</th>
-            <th nzWidth="25%">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let schedule of horarios; let i = index">
-            <td>{{ getDayName(schedule.id) }}</td>
-            <td>
-                <nz-time-picker [(ngModel)]="schedule.startHour" nzFormat="HH:mm:ss"></nz-time-picker>
-            </td>
-            <td>
-                <nz-time-picker [(ngModel)]="schedule.endHour" nzFormat="HH:mm:ss"></nz-time-picker>
-            </td>
-            <td>
-                <button nz-button nzType="link" nzShape="circle" (click)="updateHorario(schedule)">
-                    💾
-                </button>
-                <button nz-button nzType="link" nzShape="circle" (click)="deleteSchedule(schedule.id)">
-                    🗑️
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</nz-table>
+<div class="t-container t-mx-auto t-p-6">
+    <h1 class="t-text-3xl t-font-bold t-mb-6">Gestión de Horarios</h1>
+
+    <nz-spin [nzSpinning]="isLoading" nzTip="Cargando horarios...">
+        <div *ngIf="!isLoading">
+
+            <!-- Tabla de horarios normales -->
+            <nz-table #basicTable [nzData]="horarios" [nzBordered]="true" [nzSize]="'middle'">
+                <thead>
+                    <tr>
+                        <th nzWidth="25%">Día de la Semana</th>
+                        <th nzWidth="25%">Hora Inicio</th>
+                        <th nzWidth="25%">Hora Fin</th>
+                        <th nzWidth="25%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let schedule of horarios; let i = index">
+                        <td>{{ getDayName(schedule.id) }}</td>
+                        <td>
+                            <nz-time-picker [(ngModel)]="schedule.startHour" nzFormat="HH:mm:ss"></nz-time-picker>
+                        </td>
+                        <td>
+                            <nz-time-picker [(ngModel)]="schedule.endHour" nzFormat="HH:mm:ss"></nz-time-picker>
+                        </td>
+                        <td class="t-text-center">
+                            <button nz-button nzType="link" nzShape="circle" (click)="updateHorario(schedule)">
+                                💾
+                            </button>
+                            <button nz-button nzType="link" nzShape="circle" (click)="deleteSchedule(schedule.id)">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+
+            <h2 class="t-text-2xl t-font-semibold t-mt-6 t-mb-4">Excepciones de Horario</h2>
+
+            <div class="t-grid t-grid-cols-1 md:t-grid-cols-3 t-gap-6 t-mb-6">
+                <div class="t-flex t-flex-col">
+                    <label class="t-font-bold t-mb-2">Fecha inicio:</label>
+                    <nz-date-picker class="t-w-full" name="startDate"
+                        [(ngModel)]="exceptionFilter.startDate"></nz-date-picker>
+                </div>
+                <div class="t-flex t-flex-col">
+                    <label class="t-font-bold t-mb-2">Fecha fin:</label>
+                    <nz-date-picker class="t-w-full" name="endDate"
+                        [(ngModel)]="exceptionFilter.endDate"></nz-date-picker>
+                </div>
+                <div class="t-flex t-flex-col">
+                    <label class="t-font-bold t-mb-2">Horas de no trabajo:</label>
+                    <div class="t-flex t-gap-2">
+                        <nz-time-picker class="t-w-full" name="exceptionStartHour"
+                            [(ngModel)]="exceptionFilter.startHour" nzFormat="HH:mm:ss"></nz-time-picker>
+                        <nz-time-picker class="t-w-full" name="exceptionEndHour" [(ngModel)]="exceptionFilter.endHour"
+                            nzFormat="HH:mm:ss"></nz-time-picker>
+                    </div>
+                </div>
+            </div>
+
+            <button nz-button nzType="primary" class="t-mb-4 t-w-full md:t-w-auto" (click)="addException()">Agregar
+                excepción</button>
+
+            <nz-table #exceptTable [nzData]="exceptSchedules" [nzBordered]="true" [nzSize]="'middle'">
+                <thead>
+                    <tr>
+                        <th nzWidth="30%">Fecha</th>
+                        <th nzWidth="30%">Hora Inicio</th>
+                        <th nzWidth="30%">Hora Fin</th>
+                        <th nzWidth="10%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let except of exceptSchedules">
+                        <td>{{ except.date }}</td>
+                        <td>{{ except.startHour || 'No se trabaja' }}</td>
+                        <td>{{ except.endHour || 'No se trabaja' }}</td>
+                        <td class="t-text-center">
+                            <button nz-button nzType="link" nzShape="circle" (click)="deleteException(except.id)">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-spin>
+</div>

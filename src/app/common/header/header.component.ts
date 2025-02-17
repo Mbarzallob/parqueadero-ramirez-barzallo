@@ -22,6 +22,9 @@ export class HeaderComponent {
   esAdmin() {
     return this.authService.isAdmin();
   }
+  esEmpleado() {
+    return this.authService.isEmpleado();
+  }
 
   isLogged() {
     return this.authService.isLogged();
