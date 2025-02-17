@@ -9,7 +9,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let schedule of horarios; let i = index">
-            <td>{{ getDayName(schedule.weekDay) }}</td>
+            <td>{{ getDayName(schedule.id) }}</td>
             <td>
                 <nz-time-picker [(ngModel)]="schedule.startHour" nzFormat="HH:mm:ss"></nz-time-picker>
             </td>

@@ -3,23 +3,28 @@ import { ActivatedRoute } from '@angular/router';
 import { ParkingService } from '../../../services/parking/parking.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { CalendarOptions } from '@fullcalendar/core';
+import {
+  CalendarOptions,
+  EventInput,
+  EventSourceInput,
+} from '@fullcalendar/core';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { MatDialog } from '@angular/material/dialog';
+import { RegularSchedule } from '../../../models/schedule/regularSchedule';
+import { HorariosService } from '../../../services/horarios/horarios.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContractModalComponent } from '../../../modals/contract-modal/contract-modal.component';
-import { EventModalComponent } from '../../../modals/event-modal/event-modal.component';
-import { timestampToDate } from '../../../utils/firebase-helper';
+import { Contract } from '../../../models/parking/contract';
 
 @Component({
-    selector: 'app-parking-lot',
-    imports: [FullCalendarModule],
-    templateUrl: './parking-lot.component.html',
-    styleUrl: './parking-lot.component.scss'
+  selector: 'app-parking-lot',
+  imports: [FullCalendarModule],
+  templateUrl: './parking-lot.component.html',
+  styleUrl: './parking-lot.component.scss',
 })
 export class ParkingLotComponent {
-  parkingLot: any;
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
@@ -36,188 +41,108 @@ export class ParkingLotComponent {
       day: 'Día',
       list: 'Lista',
     },
-
     events: [],
     aspectRatio: 7 / 3,
     eventClick: this.handleEventClick.bind(this),
     dateClick: this.openContractModal.bind(this),
   };
-  horarios: any[] = [];
 
-  ocupiedDates: any[] = [];
+  horarios: RegularSchedule[] = [];
+  parkingId: number | null = null;
+  contracts: Contract[] = [];
+
   constructor(
+    private scheduleService: HorariosService,
+    private message: NzMessageService,
+    private modal: NzModalService,
     private route: ActivatedRoute,
-    private parkingService: ParkingService,
-    private dialog: MatDialog
+    private parkingService: ParkingService
   ) {}
-  async ngOnInit() {
-    this.horarios = await this.parkingService.getHorarios();
+
+  ngOnInit() {
+    this.getHorarios();
     this.route.queryParams.subscribe((params) => {
-      this.parkingService
-        .getParkingLot(params['blockId'], params['parkingId'])
-        .then((parkingLot) => {
-          this.parkingLot = parkingLot;
-          const events = this.generateEventsFromParkingLot(parkingLot);
-          this.calendarOptions = { ...this.calendarOptions, events };
-        });
+      this.parkingId = Number(params['parkingId']);
+      this.getContracts();
     });
   }
 
-  generateEventsFromParkingLot(parkingLot: any): any[] {
-    const events: any[] = [];
-
-    parkingLot.ContratosDiarios?.forEach((contract: any, index: number) => {
-      if (contract.status === 'active') {
-        events.push({
-          title: 'Ocupado (Diario)',
-          start: contract.fechaInicio.toDate(),
-          end: contract.fechaFin.toDate(),
-          color: '#FFD700',
-          id: 'diario-' + index.toString(),
-        });
-        this.ocupiedDates.push({
-          fechaInicio: contract.fechaInicio.toDate(),
-          fechaFin: contract.fechaFin.toDate(),
-        });
-      }
-    });
-
-    parkingLot.ContratosMensuales?.forEach((contract: any, index: number) => {
-      if (contract.status === 'active') {
-        events.push({
-          title: 'Ocupado (Mensual)',
-          start: contract.fechaInicio.toDate(),
-          end: contract.fechaFin.toDate(),
-          color: '#1E90FF',
-          id: 'mensual-' + index.toString(),
-        });
-        this.ocupiedDates.push({
-          fechaInicio: contract.fechaInicio.toDate(),
-          fechaFin: contract.fechaFin.toDate(),
-        });
-      }
-    });
-
-    parkingLot.ContratosPorHora?.forEach((contract: any, index: number) => {
-      if (contract.status === 'active') {
-        events.push({
-          title: 'Ocupado (Por Hora)',
-          start: contract.fechaInicio.toDate(),
-          end: contract.fechaFin.toDate(),
-          color: '#FF4500',
-          id: 'hora-' + index.toString(),
-        });
-        this.ocupiedDates.push({
-          fechaInicio: contract.fechaInicio.toDate(),
-          fechaFin: contract.fechaFin.toDate(),
-        });
-      }
-    });
-
-    parkingLot.ContratosSemanales?.forEach((contract: any, index: number) => {
-      if (contract.status === 'active') {
-        events.push({
-          title: 'Ocupado (Semanal)',
-          start: contract.fechaInicio.toDate(),
-          end: contract.fechaFin.toDate(),
-          color: '#32CD32',
-          id: 'semanal-' + index.toString(),
-        });
-        this.ocupiedDates.push({
-          fechaInicio: contract.fechaInicio.toDate(),
-          fechaFin: contract.fechaFin.toDate(),
-        });
-      }
-    });
-
-    return events;
-  }
-
-  handleEventClick(arg: any): void {
-    const dialog = this.dialog.open(EventModalComponent, {
-      data: {
-        event: arg.event,
-      },
-    });
-    dialog.afterClosed().subscribe(() => {
-      this.route.queryParams.subscribe((params) => {
-        this.parkingService
-          .getParkingLot(params['blockId'], params['parkingId'])
-          .then((parkingLot) => {
-            this.parkingLot = parkingLot;
-            const events = this.generateEventsFromParkingLot(parkingLot);
-            this.calendarOptions = { ...this.calendarOptions, events };
-          });
-      });
+  getHorarios() {
+    this.scheduleService.getHorarios().subscribe((data) => {
+      this.horarios = data.data;
     });
   }
-  isDateWithinHorarios(date: Date): boolean {
-    console.log('Fecha seleccionada (antes de ajuste):', date);
 
-    // Ajustar la hora de `date` a las 23:59:59
-    const adjustedDate = new Date(date);
-    adjustedDate.setHours(23, 59, 59, 999);
+  getContracts() {
+    this.parkingService.getContrats(this.parkingId!).subscribe((api) => {
+      this.contracts = api.data;
+      this.calendarOptions = {
+        ...this.calendarOptions,
+        events: this.contracts.map((contract) => {
+          let color = 'green';
+          switch (contract.contractType.id) {
+            case 'D':
+              color = 'blue';
+              break;
+            case 'S':
+              color = 'orange';
+              break;
+            case 'M':
+              color = 'red';
+              break;
+          }
+          const event: EventInput = {
+            title: contract.vehicle.model,
 
-    console.log('Fecha seleccionada (ajustada):', adjustedDate);
+            start: new Date(contract.startDate).setDate(
+              new Date(contract.startDate).getDate() + 1
+            ),
+            end: new Date(contract.finishDate).setDate(
+              new Date(contract.finishDate).getDate() + 1
+            ),
+            color: color,
+            allDay: true,
+          };
+          console.log('Evento generado:', event); // Verifica que los eventos generados sean correctos
+          return event;
+        }),
+      };
 
-    return this.horarios.some((horario) => {
-      const inicio = timestampToDate(horario.inicio);
-      const fin = timestampToDate(horario.fin);
-
-      console.log('Horario:', { inicio, fin });
-
-      // Comparar la fecha ajustada con los horarios
-      return adjustedDate >= inicio && date <= fin;
+      console.log(
+        'Eventos asignados a calendarOptions:',
+        this.calendarOptions.events
+      );
     });
+  }
+
+  handleEventClick(data: any): void {
+    console.log('Evento clickeado:', data.event);
   }
 
   openContractModal(data: any): void {
     const now = new Date();
-    const mid = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      0,
-      0,
-      0,
-      0
+    if (data.date < now) {
+      this.message.warning('No se pueden crear contratos en fechas pasadas');
+      return;
+    }
+    const diaHorario = this.horarios.find(
+      (horario) => horario.weekDay === data.date.getDay()
     );
-    if (data.date < mid) {
-      alert('No puedes seleccionar una fecha pasada');
+    if (!diaHorario?.startHour || !diaHorario?.endHour) {
+      this.message.warning('No se puede crear contratos en este día');
       return;
     }
-    if (!this.isDateWithinHorarios(data.date)) {
-      alert(
-        'La fecha seleccionada está fuera del horario permitido. Por favor selecciona otra fecha.'
-      );
-      return;
-    }
-    const dialog = this.dialog.open(ContractModalComponent, {
-      data: {
-        date: data.date,
-        ocupiedDates: this.ocupiedDates,
-        rates: {
-          diario: this.parkingLot.precioPorDia,
-          mensual: this.parkingLot.precioPorMes,
-          hora: this.parkingLot.precioPorHora,
-          semanal: this.parkingLot.precioPorSemana,
+    this.modal
+      .create({
+        nzContent: ContractModalComponent,
+        nzData: {
+          date: data.date,
+          horario: diaHorario,
         },
-        horarios: this.horarios,
-      },
-    });
-    dialog.afterClosed().subscribe(() => {
-      this.route.queryParams.subscribe((params) => {
-        this.parkingService
-          .getParkingLot(params['blockId'], params['parkingId'])
-          .then((parkingLot) => {
-            this.parkingLot = parkingLot;
-            const events = this.generateEventsFromParkingLot(parkingLot);
-            this.calendarOptions = { ...this.calendarOptions, events };
-          });
+        nzFooter: null,
+      })
+      .afterClose.subscribe((result) => {
+        this.getContracts();
       });
-    });
-  }
-  dateClick(data: any) {
-    console.log(data);
   }
 }

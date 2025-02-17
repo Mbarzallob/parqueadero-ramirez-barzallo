@@ -2,7 +2,7 @@
     <h2 class="t-text-2xl t-font-bold t-text-gray-800 t-mb-4">Gestión de Tarifas</h2>
 
     <div *ngFor="let rate of rates; let i = index" class="t-mb-6 t-border t-p-4 t-rounded-md t-shadow-sm">
-        <h3 class="t-text-lg t-font-medium t-text-gray-700 t-mb-4">Tarifa {{ rate.type }}</h3>
+        <h3 class="t-text-lg t-font-medium t-text-gray-700 t-mb-4">Tarifa {{ rate.id }}</h3>
 
         <form>
             <div class="t-grid t-grid-cols-2 t-gap-4 t-mb-4">
@@ -10,36 +10,38 @@
                     <label for="precioPorHora-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio
                         por
                         Hora</label>
-                    <input id="precioPorHora-{{ i }}" [(ngModel)]="rate.precioPorHora" name="precioPorHora-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md"
-                        (input)="checkChanges(i)" />
+                    <input id="precioPorHora-{{ i }}" [(ngModel)]="rate.priceHour" name="precioPorHora-{{ i }}"
+                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
                 </div>
                 <div>
                     <label for="precioPorDia-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio por
                         Día</label>
-                    <input id="precioPorDia-{{ i }}" [(ngModel)]="rate.precioPorDia" name="precioPorDia-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md"
-                        (input)="checkChanges(i)" />
+                    <input id="precioPorDia-{{ i }}" [(ngModel)]="rate.priceDay" name="precioPorDia-{{ i }}"
+                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
                 </div>
                 <div>
                     <label for="precioPorSemana-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio
                         por
                         Semana</label>
-                    <input id="precioPorSemana-{{ i }}" [(ngModel)]="rate.precioPorSemana"
-                        name="precioPorSemana-{{ i }}" type="number"
-                        class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md"
-                        (input)="checkChanges(i)" />
+                    <input id="precioPorSemana-{{ i }}" [(ngModel)]="rate.priceWeek" name="precioPorSemana-{{ i }}"
+                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
                 </div>
                 <div>
                     <label for="precioPorMes-{{ i }}" class="t-block t-text-sm t-font-medium t-text-gray-700">Precio por
                         Mes</label>
-                    <input id="precioPorMes-{{ i }}" [(ngModel)]="rate.precioPorMes" name="precioPorMes-{{ i }}"
-                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md"
-                        (input)="checkChanges(i)" />
+                    <input id="precioPorMes-{{ i }}" [(ngModel)]="rate.priceMonth" name="precioPorMes-{{ i }}"
+                        type="number" class="t-w-full t-px-3 t-py-2 t-border t-border-gray-300 t-rounded-md" />
+                </div>
+                <div>
+                    <label>Tipo de tarifa</label>
+                    <nz-select [(ngModel)]="rate.vehicleTypeId" name="tipoTarifa-{{ i }}" class="t-w-full">
+                        <nz-option *ngFor="let type of vehicleTypes" [nzLabel]="type.type" [nzValue]="type.id">
+                        </nz-option>
+                    </nz-select>
                 </div>
             </div>
 
-            <button *ngIf="showSaveButtons[i]" type="button" (click)="updateRate(i)"
+            <button type="button" (click)="updateRate(rate)"
                 class="t-px-4 t-py-2 t-bg-blue-500 t-text-white t-rounded-md t-hover:bg-blue-600">
                 Guardar Cambios
             </button>

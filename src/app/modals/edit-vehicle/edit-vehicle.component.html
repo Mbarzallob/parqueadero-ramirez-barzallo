@@ -1,0 +1,28 @@
+<div class="t-p-6 t-bg-white t-rounded-lg t-shadow-lg">
+
+    <form [formGroup]="vehicleForm" class="t-space-y-4">
+        <div>
+            <label class="t-block t-text-sm t-font-medium t-text-gray-700">Tipo de Vehículo</label>
+            <nz-select formControlName="type" class="t-w-full">
+                <nz-option *ngFor="let type of vehicleTypes" [nzValue]="type.id" [nzLabel]="type.type"></nz-option>
+            </nz-select>
+        </div>
+
+        <div>
+            <label class="t-block t-text-sm t-font-medium t-text-gray-700">Modelo</label>
+            <input nz-input formControlName="model" class="t-w-full t-px-3 t-py-2 t-border t-rounded-md" />
+        </div>
+
+        <div>
+            <label class="t-block t-text-sm t-font-medium t-text-gray-700">Placa</label>
+            <input nz-input formControlName="plate" class="t-w-full t-px-3 t-py-2 t-border t-rounded-md" />
+        </div>
+
+        <div class="t-flex t-justify-end t-space-x-3 t-mt-4">
+            <button nz-button nzType="default" (click)="cancel()">Cancelar</button>
+            <button nz-button nzType="primary" [disabled]="!vehicleForm.valid" (click)="saveVehicle()">
+                {{ 'Guardar' }}
+            </button>
+        </div>
+    </form>
+</div>

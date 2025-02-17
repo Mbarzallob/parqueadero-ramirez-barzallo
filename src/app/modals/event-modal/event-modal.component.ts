@@ -6,10 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-event-modal',
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
-    templateUrl: './event-modal.component.html',
-    styleUrl: './event-modal.component.scss'
+  selector: 'app-event-modal',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: './event-modal.component.html',
+  styleUrl: './event-modal.component.scss',
 })
 export class EventModalComponent {
   event: any;
@@ -54,24 +54,6 @@ export class EventModalComponent {
     this.selectedStatus = 'inactive';
 
     // Llamada al servicio para actualizar el estado a inactivo
-    this.parkingService
-      .updateContractStatus(
-        this.blockId,
-        this.parkingId,
-        this.contractTypeMap[this.contractType] as
-          | 'ContratosPorHora'
-          | 'ContratosSemanales'
-          | 'ContratosDiarios'
-          | 'ContratosMensuales', // Convierte el tipo al nombre completo
-        this.contractIndex,
-        this.selectedStatus
-      )
-      .then(() => {
-        this.dialogRef.close(true); // Cierra el modal indicando éxito
-      })
-      .catch((error) => {
-        console.error('Error al marcar como inactivo:', error);
-      });
   }
 
   /**

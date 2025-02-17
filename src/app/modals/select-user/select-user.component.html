@@ -1,0 +1,29 @@
+<div class="t-p-6 t-bg-white t-rounded-lg t-shadow-lg">
+
+    <nz-input-group>
+        <input nz-input [(ngModel)]="searchQuery" (input)="filterUsers()" placeholder="Buscar usuario...">
+    </nz-input-group>
+
+    <nz-table #basicTable [nzBordered]="true" [nzData]="filteredUsers" [nzSize]="'middle'" [nzShowPagination]="false">
+        <thead>
+            <tr>
+                <th nzWidth="40%">Nombre</th>
+                <th nzWidth="40%">Correo</th>
+                <th nzWidth="20%">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of basicTable.data">
+                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <button nz-button nzType="primary" (click)="selectUser(user)">Seleccionar</button>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+
+    <div class="t-flex t-justify-end t-space-x-3 t-mt-4">
+        <button nz-button nzType="default" (click)="close()">Cancelar</button>
+    </div>
+</div>

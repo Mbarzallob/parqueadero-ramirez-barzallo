@@ -1,0 +1,34 @@
+<div class="t-p-6 t-bg-white t-rounded-lg">
+
+
+
+    <nz-table #basicTable [nzBordered]="true" [nzData]="vehicles" [nzSize]="'middle'" [nzShowPagination]="false">
+        <thead>
+            <tr>
+                <th nzWidth="20%">Id</th>
+                <th nzWidth="20%">Modelo</th>
+                <th nzWidth="20%">Placa</th>
+                <th nzWidth="20%">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let vehicle of vehicles">
+                <td>{{ vehicle.id }}</td>
+                <td>{{ vehicle.model }}</td>
+                <td>{{ vehicle.plate }}</td>
+                <td class="t-flex t-justify-center">
+                    <button nz-button nzDanger nzShape="circle" nzSize="small" (click)="deleteVehicle(vehicle)">
+                        <i nz-icon nzType="delete"></i>
+                    </button>
+                    <button class="t-ml-5" *ngIf="canSelect" nz-button nzType="primary" nzShape="circle" nzSize="small"
+                        (click)="select(vehicle)">
+                        <i nz-icon nzType="check" nzTheme="outline"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <div class="t-mt-4">
+        <button nz-button nzType="primary" (click)="openCreateModal()">Agregar Vehículo</button>
+    </div>
+</div>

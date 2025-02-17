@@ -1,15 +1,44 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { ParkingService } from '../../services/parking/parking.service';
-import { UsersService } from '../../services/users/users.service';
-import { timestampToDate } from '../../utils/firebase-helper';
 
+import { NZ_MODAL_DATA, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { User } from '../../models/person/user/user';
+import { UsersService } from '../../services/users/users.service';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { SelectUserComponent } from '../select-user/select-user.component';
+import { ParkingSpace } from '../../models/parking/block';
+import { ParkingService } from '../../services/parking/parking.service';
+import { el } from '@fullcalendar/core/internal-common';
+import { Vehicle } from '../../models/person/profile';
+import { ContractRequest } from '../../models/parking/contract';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'app-contract-modal',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NzButtonModule,
+    NzAlertModule,
+    NzTimePickerModule,
+    NzDatePickerModule,
+    NzInputModule,
+    NzTableModule,
+    NzModalModule,
+    NzIconModule,
+    NzGridModule,
+  ],
   templateUrl: './contract-modal.component.html',
   styleUrl: './contract-modal.component.scss',
 })
@@ -20,25 +49,25 @@ export class ContractModalComponent implements OnInit {
   ocupiedDates: any[] = []; // Fechas ocupadas
   startTime: string = ''; // Hora inicial
   endTime: string = ''; // Hora final
-  blockId: string = '';
-  parkingSpaceId: string = '';
+  blockId: number | null = null;
+  parkingSpaceId: number | null = null;
   currentDate: string = ''; // Fecha mínima para inputs de tipo date
   currentTime: string = ''; // Hora mínima para inputs de tipo time
   errorMessage: string = '';
   step: number = 0;
   finalData: any;
   searchQuery: string = '';
-  filteredUsers: any[] = [];
-  selectedUser: any = null;
-  users: any[] = [];
+  selectedVehicle: Vehicle | null = null;
   price: number = 0;
   horarios: any[] = [];
+  parkingSpace: ParkingSpace | null = null;
   constructor(
-    public dialogRef: MatDialogRef<ContractModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private parkingService: ParkingService,
+    @Inject(NZ_MODAL_DATA) public data: any,
     private route: ActivatedRoute,
-    private usersService: UsersService
+    private modal: NzModalRef,
+    private modalService: NzModalService,
+    private parkingService: ParkingService,
+    private message: NzMessageService
   ) {}
 
   ngOnInit(): void {
@@ -59,8 +88,13 @@ export class ContractModalComponent implements OnInit {
     this.ocupiedDates = this.data.ocupiedDates;
     this.horarios = this.data.horarios;
     this.route.queryParams.subscribe((params) => {
-      this.blockId = params['blockId'];
-      this.parkingSpaceId = params['parkingId'];
+      this.blockId = Number(params['blockId']);
+      this.parkingSpaceId = Number(params['parkingId']);
+      this.parkingService
+        .getParkingSpace(this.parkingSpaceId)
+        .subscribe((api) => {
+          this.parkingSpace = api.data;
+        });
     });
   }
 
@@ -91,18 +125,6 @@ export class ContractModalComponent implements OnInit {
         const monthEnd = new Date(start); // Crear copia independiente
         monthEnd.setMonth(monthEnd.getMonth() + 1);
         this.endDate = formatDate(monthEnd, 'yyyy-MM-dd', 'en-US');
-        break;
-
-      case 'hora':
-        const nowTime = new Date();
-        this.startTime = this.formatTime(
-          nowTime.getHours(),
-          nowTime.getMinutes() + 3
-        );
-        this.endTime = this.formatTime(
-          nowTime.getHours() + 1,
-          nowTime.getMinutes() + 3
-        ); // Añadir una hora por defecto
         break;
     }
   }
@@ -138,7 +160,7 @@ export class ContractModalComponent implements OnInit {
 
   updateEndDate(event: string): void {
     this.endDate = event;
-    this.validateQuota(); // Validar y ajustar según la cuota
+    this.validateQuota();
   }
   validateQuota(): boolean {
     this.errorMessage = '';
@@ -190,21 +212,21 @@ export class ContractModalComponent implements OnInit {
 
     return true;
   }
-  filterUsers(): void {
-    const query = this.searchQuery.toLowerCase();
-
-    this.filteredUsers = this.users.filter(
-      (user) =>
-        (user.nombre || '').toLowerCase().includes(query) ||
-        (user.email || '').toLowerCase().includes(query) ||
-        (user.apellido || '').includes(query)
-    );
-  }
 
   // Seleccionar un usuario
-  selectUser(user: any): void {
-    this.selectedUser = user;
-    console.log(user);
+  seleccionarUsuario() {
+    this.modalService
+      .create({
+        nzContent: SelectUserComponent,
+        nzFooter: null,
+        nzTitle: 'Seleccionar usuario',
+      })
+      .afterClose.subscribe((result) => {
+        console.log(result);
+        if (result) {
+          this.selectedVehicle = result;
+        }
+      });
   }
 
   // Ir al paso anterior
@@ -212,228 +234,87 @@ export class ContractModalComponent implements OnInit {
     this.step = Math.max(0, this.step - 1);
   }
 
-  async save() {
-    if (this.errorMessage != '') return;
-    const now = new Date();
-    this.errorMessage = '';
-    if (
-      new Date(
-        this.startDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.startTime : '00:00:00')
-      ) < now
-    ) {
-      this.errorMessage = 'La fecha inicial no puede ser anterior a hoy.';
+  save() {
+    if (this.errorMessage) {
+      return;
+    }
+    if (this.step === 0) {
+      this.calculatePrice();
+      this.step = 1;
+    }
+  }
+  calculatePrice(): void {
+    if (!this.parkingSpace) {
+      this.price = 0;
       return;
     }
 
-    if (this.selectedOption === 'hora') {
-      if (!this.startTime || !this.endTime) {
-        this.errorMessage = 'Por favor selecciona un rango de horas válido.';
-        return;
-      }
+    const pricePerDay = this.parkingSpace.parkingSpaceType.priceDay || 0;
+    const pricePerWeek = this.parkingSpace.parkingSpaceType.priceWeek || 0;
+    const pricePerMonth = this.parkingSpace.parkingSpaceType.priceMonth || 0;
 
-      const [startHour, startMinute] = this.startTime.split(':').map(Number);
-      const [endHour, endMinute] = this.endTime.split(':').map(Number);
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+    const diffDays = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
-      if (
-        startHour < now.getHours() ||
-        (startHour === now.getHours() && startMinute < now.getMinutes())
-      ) {
-        this.errorMessage =
-          'La hora de inicio no puede ser anterior a la hora actual.';
-        return;
-      }
-
-      if (
-        endHour < startHour ||
-        (endHour === startHour && endMinute <= startMinute)
-      ) {
-        this.errorMessage =
-          'La hora de fin debe ser posterior a la hora de inicio.';
-        return;
-      }
-    }
-
-    // Asignar el tipo de contrato según la opción seleccionada
-    let typeofContract:
-      | 'ContratosPorHora'
-      | 'ContratosDiarios'
-      | 'ContratosSemanales'
-      | 'ContratosMensuales' = 'ContratosPorHora';
     switch (this.selectedOption) {
-      case 'hora':
-        typeofContract = 'ContratosPorHora';
-        break;
       case 'dia':
-        typeofContract = 'ContratosDiarios';
+        this.price = pricePerDay * diffDays;
         break;
       case 'semana':
-        typeofContract = 'ContratosSemanales';
+        this.price =
+          Math.floor(diffDays / 7) * pricePerWeek +
+          (diffDays % 7) * pricePerDay;
         break;
       case 'mes':
-        typeofContract = 'ContratosMensuales';
+        const diffMonths =
+          (end.getFullYear() - start.getFullYear()) * 12 +
+          (end.getMonth() - start.getMonth());
+
+        if (diffMonths < 1) {
+          // Si la duración es menor a un mes, calcular proporcionalmente
+          this.price = (diffDays / 30) * pricePerMonth;
+        } else {
+          this.price = diffMonths * pricePerMonth;
+        }
         break;
       default:
-        this.errorMessage = 'Por favor selecciona una opción válida.';
-        return;
+        this.price = 0;
     }
 
-    for (const ocupada of this.ocupiedDates) {
-      const ocupiedStart = ocupada.fechaInicio;
-      const ocupiedEnd = ocupada.fechaFin;
-
-      const selectedStart = new Date(
-        this.startDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.startTime : '00:00:00')
-      );
-      const selectedEnd = new Date(
-        this.endDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.endTime : '00:00:00')
-      );
-
-      // Validar solapamiento
-      if (
-        (selectedStart >= ocupiedStart && selectedStart < ocupiedEnd) || // Inicio dentro del rango ocupado
-        (selectedEnd > ocupiedStart && selectedEnd <= ocupiedEnd) || // Fin dentro del rango ocupado
-        (selectedStart <= ocupiedStart && selectedEnd >= ocupiedEnd) // Rango seleccionado abarca al rango ocupado
-      ) {
-        console.log(ocupada);
-        this.errorMessage = 'El rango de fechas seleccionado está ocupado.';
-        return;
-      }
-    }
-
-    for (const horario of this.horarios) {
-      const inicio = timestampToDate(horario.inicio);
-      const fin = timestampToDate(horario.fin);
-
-      const selectedStart = new Date(
-        this.startDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.startTime : '00:00:00')
-      );
-      const selectedEnd = new Date(
-        this.endDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.endTime : '23:59:59')
-      );
-
-      console.log('Horario:', { inicio, fin });
-
-      // **Validar SOLO para la opción "hora"**
-      if (this.selectedOption === 'hora') {
-        const validStartTime = new Date(selectedStart);
-        validStartTime.setHours(inicio.getHours(), inicio.getMinutes(), 0, 0);
-
-        const validEndTime = new Date(selectedStart);
-        validEndTime.setHours(fin.getHours(), fin.getMinutes(), 0, 0);
-
-        if (
-          selectedStart < validStartTime || // El inicio es antes del horario permitido
-          selectedStart >= validEndTime || // El inicio es después o igual al fin permitido
-          selectedEnd <= validStartTime || // El fin es antes o igual al inicio permitido
-          selectedEnd > validEndTime // El fin es después del horario permitido
-        ) {
-          console.log(horario);
-          this.errorMessage =
-            'El rango seleccionado está fuera del horario permitido.';
-          return;
-        }
-      }
-
-      // **Validaciones para día, semana o mes**
-    }
-
-    const contractData = {
-      fechaInicio: new Date(
-        this.startDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.startTime : '00:00:00')
-      ),
-      fechaFin: new Date(
-        this.endDate +
-          'T' +
-          (this.selectedOption === 'hora' ? this.endTime : '00:00:00')
-      ),
-      idUser: '', // Cambiar por el ID real del usuario
-    };
-
-    this.step = 1;
-
-    // Calcular el precio según la opción seleccionada y las tarifas proporcionadas
-    console.log(this.data.rates);
-    switch (this.selectedOption) {
-      case 'hora':
-        const startHour = new Date(contractData.fechaInicio).getHours();
-        const endHour = new Date(contractData.fechaFin).getHours();
-        const hours = endHour - startHour;
-        this.price = hours * this.data.rates.hora;
-        break;
-      case 'dia':
-        const startDay = new Date(contractData.fechaInicio);
-        const endDay = new Date(contractData.fechaFin);
-        const days = Math.ceil(
-          (endDay.getTime() - startDay.getTime()) / (1000 * 60 * 60 * 24)
-        );
-        this.price = days * this.data.rates.diario;
-        break;
-      case 'semana':
-        const startWeek = new Date(contractData.fechaInicio);
-        const endWeek = new Date(contractData.fechaFin);
-        const weeks = Math.ceil(
-          (endWeek.getTime() - startWeek.getTime()) / (1000 * 60 * 60 * 24 * 7)
-        );
-        this.price = weeks * this.data.rates.semanal;
-        break;
-      case 'mes':
-        const startMonth = new Date(contractData.fechaInicio);
-        const endMonth = new Date(contractData.fechaFin);
-        const months =
-          (endMonth.getFullYear() - startMonth.getFullYear()) * 12 +
-          (endMonth.getMonth() - startMonth.getMonth());
-        this.price = months * this.data.rates.mensual;
-        break;
-    }
-
-    this.finalData = {
-      blockId: this.blockId,
-      parkingSpaceId: this.parkingSpaceId,
-      typeofContract: typeofContract,
-      contractData: contractData,
-    };
-    try {
-      // this.users = await this.usersService.getUsers(false);
-      // this.filteredUsers = this.users;
-    } catch (e) {
-      console.error(e);
-      this.errorMessage = (e as Error).message;
-    }
+    // Redondear a 2 decimales para evitar problemas con los cálculos flotantes
+    this.price = Math.round(this.price * 100) / 100;
   }
+
   guardar() {
-    this.finalData.contractData.idUser = this.selectedUser.id;
-    this.finalData.contractData.precio = this.price;
-    console.log(this.finalData);
-    this.parkingService
-      .addContractToParkingLot(
-        this.finalData.blockId,
-        this.finalData.parkingSpaceId,
-        this.finalData.typeofContract,
-        this.finalData.contractData
-      )
-      .then(() => {
-        this.dialogRef.close();
-      })
-      .catch((e) => {
-        console.error(e);
-        this.errorMessage = (e as Error).message;
-      });
+    var typeId =
+      this.selectedOption === 'dia'
+        ? 'D'
+        : this.selectedOption === 'semana'
+        ? 'S'
+        : 'M';
+    const data: ContractRequest = {
+      vehicleId: this.selectedVehicle!.id,
+      endDate: new Date(this.endDate),
+      startDate: new Date(this.startDate),
+      parkingId: this.parkingSpaceId!,
+      typeId: typeId,
+    };
+    this.parkingService.addContract(data).subscribe(
+      (api) => {
+        this.message.success('Contrato creado correctamente');
+        this.modal.close(true);
+      },
+      (error) => {
+        this.message.error('Error al crear el contrato');
+      }
+    );
   }
 
   cancel(): void {
-    this.dialogRef.close();
+    this.modal.close();
   }
 
   // Helper para formatear horas en formato HH:mm

@@ -6,9 +6,11 @@ import { User } from '../../../models/person/user/user';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ActualizarUsuarioComponent } from '../../../modals/actualizar-usuario/actualizar-usuario.component';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { VehiclesComponent } from '../../../modals/vehicles/vehicles.component';
 @Component({
   selector: 'app-users',
-  imports: [CommonModule],
+  imports: [CommonModule, NzButtonModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
 })
@@ -47,5 +49,15 @@ export class UsersComponent implements OnInit {
           this.getUsers();
         }
       });
+  }
+  openVehicleModal(user: User) {
+    this.modal.create({
+      nzContent: VehiclesComponent,
+      nzData: {
+        user,
+      },
+      nzFooter: null,
+      nzTitle: 'Vehículos: ' + user.firstName + ' ' + user.lastName,
+    });
   }
 }

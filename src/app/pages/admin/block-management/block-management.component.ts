@@ -8,94 +8,103 @@ import {
 } from '@angular/forms';
 import { BlocksService } from '../../../services/blocks/blocks.service';
 import { CommonModule } from '@angular/common';
+import { Block, ParkingSpaceType } from '../../../models/parking/block';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { RatesService } from '../../../services/rates/rates.service';
 
 @Component({
-    selector: 'app-block-management',
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
-    templateUrl: './block-management.component.html',
-    styleUrl: './block-management.component.scss'
+  selector: 'app-block-management',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NzButtonModule],
+  templateUrl: './block-management.component.html',
+  styleUrl: './block-management.component.scss',
 })
 export class BlockManagementComponent implements OnInit {
   blockForm: FormGroup;
   parkingSpaceForm: FormGroup;
-  blocks: any[] = [];
-  rates: any[] = [];
-  selectedBlockId: string | null = null;
+  loading: boolean = false;
+  blocks: Block[] = [];
+  rates: ParkingSpaceType[] = [];
+  selectedBlockId: number | null = null;
 
-  constructor(private blockService: BlocksService, private fb: FormBuilder) {
+  constructor(
+    private blockService: BlocksService,
+    private fb: FormBuilder,
+    private message: NzMessageService,
+    private ratesService: RatesService
+  ) {
     this.blockForm = this.fb.group({
       name: ['', Validators.required],
     });
 
     this.parkingSpaceForm = this.fb.group({
-      rateId: ['', Validators.required], // Relación con la tarifa seleccionada
+      rateId: ['', Validators.required],
     });
   }
 
-  async ngOnInit(): Promise<void> {
-    // Suscribirse a los bloques
-    this.blockService.getBlocks().subscribe((blocks) => {
-      this.blocks = blocks;
-      console.log('Bloques cargados:', this.blocks);
+  ngOnInit() {
+    this.getBlocks();
+    this.getRates();
+  }
+
+  getBlocks() {
+    this.blockService.getBlocks().subscribe((response) => {
+      this.blocks = response.data;
     });
-
-    // Obtener tarifas al iniciar
-    this.rates = await this.blockService.getRates();
-    console.log('Tarifas cargadas:', this.rates);
   }
 
-  async addBlock(): Promise<void> {
-    if (this.blockForm.invalid) return;
-
-    const blockData = {
-      nombre: this.blockForm.value.name,
-      parkingSpaces: [],
-    };
-
-    await this.blockService.addBlock(blockData);
-    this.blockForm.reset();
-    alert('Bloque añadido exitosamente!');
+  addBlock() {
+    const { name } = this.blockForm.value;
+    this.loading = true;
+    this.blockService
+      .addBlock(name)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe(
+        () => {
+          this.getBlocks();
+          this.blockForm.reset();
+          this.message.success('Bloque agregado');
+        },
+        (error) => {
+          this.message.error(error);
+        }
+      );
   }
 
-  async addParkingSpace(): Promise<void> {
-    console.log('Formulario:', this.parkingSpaceForm.value);
-    console.log('Bloque seleccionado:', this.selectedBlockId);
-
-    if (this.parkingSpaceForm.invalid || !this.selectedBlockId) {
-      console.error('Formulario inválido o no hay bloque seleccionado');
-      return;
-    }
-
-    const selectedRate = this.rates.find(
-      (rate) => rate.id === this.parkingSpaceForm.value.rateId
-    );
-
-    if (!selectedRate) {
-      alert('Tarifa seleccionada no válida');
-      return;
-    }
-
-    const parkingSpaceData = {
-      type: selectedRate.type, // Derivar el tipo directamente de la tarifa seleccionada.
-      precioPorHora: selectedRate.precioPorHora,
-      precioPorDia: selectedRate.precioPorDia,
-      precioPorSemana: selectedRate.precioPorSemana,
-      precioPorMes: selectedRate.precioPorMes,
-    };
-
-    console.log('Datos del Parking Space:', parkingSpaceData);
-
-    await this.blockService.addParkingSpaceToBlock(
-      this.selectedBlockId,
-      parkingSpaceData
-    );
-
-    this.parkingSpaceForm.reset();
-    alert('Parking space añadido exitosamente!');
+  getRates() {
+    this.ratesService.getRates().subscribe((response) => {
+      this.rates = response.data;
+    });
   }
 
-  selectBlock(blockId: string): void {
-    console.log('Bloque seleccionado:', blockId);
+  selectBlock(blockId: number): void {
     this.selectedBlockId = blockId;
+  }
+
+  addParkingSpace() {
+    if (!this.parkingSpaceForm.valid) {
+      this.message.error('Complete todos los campos');
+      return;
+    }
+    const { rateId } = this.parkingSpaceForm.value;
+    if (!this.selectedBlockId) {
+      this.message.error('Seleccione un bloque');
+      return;
+    }
+    this.loading = true;
+    this.blockService
+      .addParkingSpace(this.selectedBlockId, rateId)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe(
+        () => {
+          this.getBlocks();
+          this.parkingSpaceForm.reset();
+          this.message.success('Espacio de parqueo agregado');
+        },
+        (error) => {
+          this.message.error(error);
+        }
+      );
   }
 }
