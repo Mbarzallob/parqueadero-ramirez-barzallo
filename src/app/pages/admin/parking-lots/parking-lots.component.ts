@@ -40,6 +40,7 @@ export class ParkingLotsComponent implements OnInit {
   selectedBlock: Block | null = null; // Bloque seleccionado
   parkingSpaces: ParkingSpace[] = []; // Espacios de estacionamiento del bloque seleccionado
   isLoading: boolean = false; // Bandera para indicar carga de datos
+  isLoadingParkingSpaces: boolean = false; // Bandera para indicar carga de datos
   filter: FilterParkingSpace = {
     startDate: null,
     endDate: null,
@@ -92,10 +93,10 @@ export class ParkingLotsComponent implements OnInit {
       this.message.error('Seleccione un bloque');
       return;
     }
-    this.isLoading = true;
+    this.isLoadingParkingSpaces = true;
     this.parkingService
       .getParkingSpaces(this.selectedBlock!.id, this.filter)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => (this.isLoadingParkingSpaces = false)))
       .subscribe((api) => {
         this.parkingSpaces = api.data;
       });

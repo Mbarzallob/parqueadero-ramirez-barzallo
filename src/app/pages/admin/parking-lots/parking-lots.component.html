@@ -54,20 +54,26 @@
         </div>
 
         <!-- Espacios de Parqueo -->
-        <div class="t-grid md:t-grid-cols-2 lg:t-grid-cols-3 xl:t-grid-cols-4 t-gap-6">
-            <div *ngFor="let space of parkingSpaces" routerLink="/admin/parking-lot"
-                [queryParams]="{parkingId:space.id, blockId:selectedBlock!.id, vehicleType:space.parkingSpaceType.vehicleType.id}"
-                class="t-p-6 t-rounded-lg t-shadow-md t-bg-white t-border t-border-gray-200 t-flex t-flex-col t-justify-between">
-                <h2 class="t-text-lg t-font-bold t-mb-4">Espacio {{selectedBlock?.name}}{{ space.id }}</h2>
-                <p class="t-text-sm">💰 <span class="t-font-semibold">{{space.parkingSpaceType.priceHour}}</span> por
-                    hora</p>
-                <p class="t-text-sm">📅 <span class="t-font-semibold">{{space.parkingSpaceType.priceDay}}</span> por día
-                </p>
-                <p class="t-text-sm">🗓️ <span class="t-font-semibold">{{space.parkingSpaceType.priceWeek}}</span> por
-                    semana</p>
-                <p class="t-text-sm">📆 <span class="t-font-semibold">{{space.parkingSpaceType.priceMonth}}</span> por
-                    mes</p>
+        <nz-spin [nzSpinning]="isLoadingParkingSpaces">
+            <div class="t-grid md:t-grid-cols-2 lg:t-grid-cols-3 xl:t-grid-cols-4 t-gap-6">
+                <div *ngFor="let space of parkingSpaces" routerLink="/admin/parking-lot"
+                    [queryParams]="{parkingId:space.id, blockId:selectedBlock!.id, vehicleType:space.parkingSpaceType.vehicleType.id}"
+                    class="t-p-6 t-rounded-lg t-shadow-md t-bg-white t-border t-border-gray-200 t-flex t-flex-col t-justify-between">
+                    <h2 class="t-text-lg t-font-bold t-mb-4">Espacio {{selectedBlock?.name}}{{ space.id }}</h2>
+                    <p class="t-text-sm">💰 <span class="t-font-semibold">{{space.parkingSpaceType.priceHour}}</span>
+                        por
+                        hora</p>
+                    <p class="t-text-sm">📅 <span class="t-font-semibold">{{space.parkingSpaceType.priceDay}}</span> por
+                        día
+                    </p>
+                    <p class="t-text-sm">🗓️ <span class="t-font-semibold">{{space.parkingSpaceType.priceWeek}}</span>
+                        por
+                        semana</p>
+                    <p class="t-text-sm">📆 <span class="t-font-semibold">{{space.parkingSpaceType.priceMonth}}</span>
+                        por
+                        mes</p>
+                </div>
             </div>
-        </div>
+        </nz-spin>
     </nz-spin>
 </div>

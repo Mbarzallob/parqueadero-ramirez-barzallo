@@ -52,4 +52,8 @@ export class ParkingService {
   getContractTypes() {
     return this.http.get<Response<ContractType[]>>('contract/types');
   }
+
+  deleteContract(id: number) {
+    return this.http.delete<Response<any>>('contract/' + id);
+  }
 }

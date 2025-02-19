@@ -17,6 +17,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Profile } from '../../models/person/profile';
 import { User } from '../../models/person/user/user';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-actualizar-usuario',
@@ -83,7 +84,6 @@ export class ActualizarUsuarioComponent implements OnInit {
       fechaNacimiento:
         this.userForm.get('fechaNacimiento')?.value || new Date(),
     };
-    console.log(profile);
 
     this.personService
       .updateUserProfile(profile, (this.data.user as User).id)

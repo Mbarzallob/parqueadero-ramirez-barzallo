@@ -102,7 +102,7 @@ export class ReportComponent {
       );
     } else {
       const filter: TicketFilter = {
-        active: filterData.active || null,
+        active: filterData.active,
         parkingSpace: filterData.parkingSpace || null,
         vehicle: filterData.vehicle || null,
         startDate: filterData.startDate ? filterData.startDate : null,

@@ -66,7 +66,17 @@ export class VehiclesComponent implements OnInit {
         this.getVehicles();
       });
   }
-  deleteVehicle(vehicle: Vehicle) {}
+  deleteVehicle(vehicle: Vehicle) {
+    this.personService.deleteVehicle(vehicle.id).subscribe(
+      (response) => {
+        this.message.success('Vehículo eliminado');
+        this.getVehicles();
+      },
+      (error) => {
+        this.message.error(error.message);
+      }
+    );
+  }
   select(vehicle: Vehicle) {
     this.modal.close(vehicle);
   }

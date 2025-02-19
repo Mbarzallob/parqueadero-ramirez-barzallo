@@ -17,6 +17,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ContractModalComponent } from '../../../modals/contract-modal/contract-modal.component';
 import { Contract } from '../../../models/parking/contract';
+import { EventModalComponent } from '../../../modals/event-modal/event-modal.component';
 
 @Component({
   selector: 'app-parking-lot',
@@ -102,8 +103,9 @@ export class ParkingLotComponent {
             ),
             color: color,
             allDay: true,
+            id: contract.id.toString(),
           };
-          console.log('Evento generado:', event); // Verifica que los eventos generados sean correctos
+
           return event;
         }),
       };
@@ -116,13 +118,46 @@ export class ParkingLotComponent {
   }
 
   handleEventClick(data: any): void {
-    console.log('Evento clickeado:', data.event);
+    const contrato = this.contracts.find(
+      (contract) => contract.id === Number(data.event.id)
+    );
+    this.modal
+      .create({
+        nzContent: EventModalComponent,
+        nzData: {
+          contrato: contrato,
+        },
+        nzWidth: '50%',
+        nzTitle: 'Detalles del Contrato',
+        nzFooter: null,
+      })
+      .afterClose.subscribe((result) => {
+        if (result) {
+          this.getContracts();
+        }
+      });
   }
 
   openContractModal(data: any): void {
     const now = new Date();
     if (data.date < now) {
       this.message.warning('No se pueden crear contratos en fechas pasadas');
+      return;
+    }
+    const selectedDate = new Date(data.date).toISOString().split('T')[0];
+
+    // Revisar si hay algún evento en esa fecha
+    const hayEventosEseDia = this.contracts.some((contract) => {
+      const startDate = new Date(contract.startDate)
+        .toISOString()
+        .split('T')[0];
+      const endDate = new Date(contract.finishDate).toISOString().split('T')[0];
+
+      return selectedDate >= startDate && selectedDate < endDate;
+    });
+
+    if (hayEventosEseDia) {
+      this.message.warning('Ya existe un contrato para esta fecha');
       return;
     }
     const diaHorario = this.horarios.find(

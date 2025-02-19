@@ -52,7 +52,7 @@
                     <nz-form-control>
                         <nz-select formControlName="rateId" nzPlaceHolder="Seleccione una tarifa">
                             <nz-option *ngFor="let rate of rates" [nzValue]="rate.id"
-                                [nzLabel]="'ID: ' + rate.id + ' - Por Hora: ' + rate.priceHour + ' | Por Día: ' + rate.priceDay">
+                                [nzLabel]="'ID: ' + rate.id + ' - Por Dia: ' + rate.priceDay + ' | Por Semana: ' + rate.priceWeek + ' | Por Mes: ' + rate.priceMonth ">
                             </nz-option>
                         </nz-select>
                     </nz-form-control>

@@ -34,7 +34,7 @@
                 <nz-form-control>
                     <nz-select formControlName="parkingSpace" nzPlaceHolder="Seleccione un espacio" class="t-w-full">
                         <nz-option *ngFor="let space of parkingSpaces" [nzValue]="space.id"
-                            [nzLabel]="space.id+space.parkingSpaceType.vehicleType.type"></nz-option>
+                            [nzLabel]="space.id+': '+space.parkingSpaceType.vehicleType.type + ' | Por dia: ' + space.parkingSpaceType.priceDay "></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>

@@ -1,19 +1,38 @@
-<div class="p-6">
-    <h2 class="text-lg font-bold text-gray-800 mb-4">Detalles del Evento</h2>
+<div class="t-p-6 t-bg-white t-rounded-lg t-shadow-md">
 
-    <div class="mb-4">
-        <p><strong>Título:</strong> {{ event.title }}</p>
-        <p><strong>Inicio:</strong> {{ event.start | date: 'fullDate' }} {{ event.start | date: 'shortTime' }}</p>
-        <p><strong>Fin:</strong> {{ event.end | date: 'fullDate' }} {{ event.end | date: 'shortTime' }}</p>
-        <p><strong>Tipo:</strong> {{ contractType }}</p>
-    </div>
+    <nz-descriptions [nzBordered]="true" [nzColumn]="1">
+        <nz-descriptions-item nzTitle="ID del Contrato">{{ contract?.id }}</nz-descriptions-item>
 
-    <div class="flex justify-end space-x-4">
-        <button (click)="close()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-            Cancelar
-        </button>
-        <button (click)="markAsInactive()" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-            Eliminar
-        </button>
+        <nz-descriptions-item nzTitle="Estado">
+            <nz-tag [nzColor]="contract?.active ? 'green' : 'red'">
+                {{ contract?.active ? 'Activo' : 'Inactivo' }}
+            </nz-tag>
+        </nz-descriptions-item>
+
+        <nz-descriptions-item nzTitle="Fecha de Inicio">
+            {{ contract?.startDate | date: 'short' }}
+        </nz-descriptions-item>
+
+        <nz-descriptions-item nzTitle="Fecha de Fin">
+            {{ contract?.finishDate ? (contract?.finishDate | date: 'short') : 'No definido' }}
+        </nz-descriptions-item>
+
+        <nz-descriptions-item nzTitle="Tipo de Contrato">
+            {{ contract?.contractType?.name }}
+        </nz-descriptions-item>
+
+        <nz-descriptions-item nzTitle="Espacio de Parqueo">
+            #{{ contract?.parkingSpace?.id }}
+        </nz-descriptions-item>
+
+        <nz-descriptions-item nzTitle="Vehículo" [nzSpan]="2">
+            {{ contract?.vehicle?.model }} ({{ contract?.vehicle?.plate }})
+        </nz-descriptions-item>
+    </nz-descriptions>
+
+    <!-- Sección de acciones -->
+    <div class="t-mt-6 t-flex t-justify-end">
+        <button (click)="eliminar()" nz-button nzDanger nzType="primary">Eliminar</button>
+        <button class="t-ml-5" (click)="cerrar()" nz-button nzType="primary">Cerrar</button>
     </div>
 </div>

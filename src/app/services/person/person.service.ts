@@ -42,4 +42,8 @@ export class PersonService {
   addVehicle(vehicle: VehicleRequest, userId: number) {
     return this.http.post<Response<any>>('person/vehicle/' + userId, vehicle);
   }
+
+  deleteVehicle(vehicleId: number) {
+    return this.http.delete<Response<any>>('person/vehicle/' + vehicleId);
+  }
 }
