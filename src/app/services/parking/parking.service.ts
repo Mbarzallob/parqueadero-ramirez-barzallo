@@ -39,7 +39,7 @@ export class ParkingService {
   }
 
   addTicket(ticket: TicketRequest) {
-    return this.http.post<Response<any>>('contract/ticket', ticket);
+    return this.http.post<Response<number>>('contract/ticket', ticket);
   }
   endTicket(id: number) {
     return this.http.put<Response<any>>('contract/ticket/' + id + '/end', {});

@@ -37,4 +37,5 @@ export interface FilterParkingSpace {
   startDate: Date | null;
   endDate: Date | null;
   vehicleType: number | null;
+  forTicket: boolean | null | undefined;
 }

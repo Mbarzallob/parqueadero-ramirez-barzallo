@@ -24,6 +24,7 @@ import {
   RegularSchedule,
 } from '../../../models/schedule/regularSchedule';
 import { HorariosService } from '../../../services/horarios/horarios.service';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-tickets',
@@ -36,6 +37,7 @@ import { HorariosService } from '../../../services/horarios/horarios.service';
     NzDatePickerModule,
     NzTableModule,
     NzSpinModule,
+    NzInputModule,
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.scss',
@@ -46,6 +48,7 @@ export class TicketsComponent implements OnInit {
   vehicleTypes: VehicleType[] = [];
   parkingSpaces: ParkingSpace[] = [];
   tickets: Ticket[] = [];
+  filtro: string = '';
   horarios: RegularSchedule[] = []; // Guardará los horarios permitidos
   exceptSchedules: ExceptSchedule[] = [];
 
@@ -53,7 +56,21 @@ export class TicketsComponent implements OnInit {
     startDate: new Date(),
     vehicleType: null,
     endDate: null,
+    forTicket: true,
   };
+
+  get ticketsFiltered() {
+    return this.tickets.filter(
+      (t) =>
+        t.id
+          .toString()
+          .toLocaleLowerCase()
+          .includes(this.filtro.toLocaleLowerCase()) ||
+        t.vehicle.plate
+          .toLocaleLowerCase()
+          .includes(this.filtro.toLocaleLowerCase())
+    );
+  }
 
   constructor(
     private parkingService: ParkingService,
@@ -329,10 +346,19 @@ export class TicketsComponent implements OnInit {
     console.log('Enviando ticketRequest:', ticketRequest);
 
     this.parkingService.addTicket(ticketRequest).subscribe(
-      () => {
-        this.message.success('Ticket registrado con éxito.');
-        this.getTickets();
-        this.getParkingSpaces();
+      (response) => {
+        const ticketId = response.data;
+
+        this.modalService
+          .create({
+            nzTitle: 'Ticket registrado',
+            nzContent: `Ticket registrado con éxito. ID: ${ticketId}`,
+            nzOkText: 'OK',
+          })
+          .afterClose.subscribe(() => {
+            this.getTickets();
+            this.getParkingSpaces();
+          });
       },
       (error) => {
         this.message.error(error);

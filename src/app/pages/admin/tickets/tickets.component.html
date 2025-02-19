@@ -42,7 +42,10 @@
             </div>
 
             <h2 class="t-text-2xl t-font-semibold t-mt-6">Tickets Activos</h2>
-            <nz-table #ticketTable [nzData]="tickets" [nzBordered]="true" [nzSize]="'middle'">
+            <div class="t-w-52">
+                <input type="text" nz-input placeholder="Buscar por placa o codigo" [(ngModel)]="filtro">
+            </div>
+            <nz-table #ticketTable [nzData]="ticketsFiltered" [nzBordered]="true" [nzSize]="'middle'">
                 <thead>
                     <tr>
                         <th nzWidth="30%">Vehículo</th>
@@ -52,7 +55,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let ticket of tickets">
+                    <tr *ngFor="let ticket of ticketsFiltered">
                         <td>{{ ticket.vehicle.plate }} - {{ ticket.vehicle.model }}</td>
                         <td>{{ formatDate(ticket.startDate) }}</td>
                         <td>{{ ticket.parkingSpace.id }}</td>

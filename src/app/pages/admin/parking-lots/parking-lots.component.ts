@@ -45,6 +45,7 @@ export class ParkingLotsComponent implements OnInit {
     startDate: null,
     endDate: null,
     vehicleType: null,
+    forTicket: false,
   }; // Filtro dinámico
   vehicleTypes: VehicleType[] = [];
 
@@ -53,6 +54,7 @@ export class ParkingLotsComponent implements OnInit {
       startDate: null,
       endDate: null,
       vehicleType: null,
+      forTicket: false,
     };
   }
   constructor(
